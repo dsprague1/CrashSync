@@ -110,7 +110,7 @@ void CrashSyncAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 {
     m_EnvelopeFollower.setAttackTimeMs(sampleRate);
     m_Oscillator.setSamplerate(sampleRate);
-    m_Oscillator.reset();
+    m_Oscillator.reset(false);
 }
 
 void CrashSyncAudioProcessor::releaseResources()
@@ -184,8 +184,13 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         // check for reset
         if(sig <= m_pThreshold->get()) // parameterize this threshold
         {
-            m_Oscillator.reset();
+            m_Oscillator.reset(true);
         }
+        else
+        {
+            m_Oscillator.setResetState(false);
+        }
+
         float value = m_Oscillator.process();
 
         *outputL++ = value;

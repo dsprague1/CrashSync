@@ -22,18 +22,22 @@ public:
 
 	int32_t getPhase() { return m_nPhase; }
 
-	void reset();
+	void reset(bool state);
+	void setResetState(bool state) { m_bIsResetState = state; }
 	float process();
 
 private:
-
 	inline int32_t IncrementAndCookWaveform();
+	inline int32_t CookWaveform(int32_t value);
 
 	int32_t m_nPhase;
 	int32_t m_nIncrement;
 	int32_t m_nSamplerate;
 	uint32_t m_nWaveform;
 	float m_fFrequency;
+	float m_fSmoothedOutZ;
+	float m_fSmoothedOut;
 	bool m_bIsBipolar;
+	bool m_bIsResetState;
 };
 
