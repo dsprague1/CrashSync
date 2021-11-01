@@ -25,12 +25,18 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     m_pFrequency = new juce::AudioParameterFloat("frequency", "Frequency", 0.0f, 1.0f, 0.0f);
     m_pThreshold = new juce::AudioParameterFloat("threshold", "Threshold", 0.0f, 1.0f, 0.0f);
     m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.0f);
-    m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::WaveformTri, SCOscillator::numWaveforms, SCOscillator::WaveformSaw);
+    m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::WaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::WaveformSaw);
+    m_pInputMode = new juce::AudioParameterInt("input_mode", "Input Mode", kInputModeNormal, kNumInputMode - 1, kInputModeNormal);
+    m_pEnvAttack = new juce::AudioParameterFloat("env_attack", "Env Attack", 0.f, 1.f, 0.1);
+    m_pEnvRelease = new juce::AudioParameterFloat("env_release", "Env Release", 0.f, 1.f, 0.1);
 
     addParameter(m_pFrequency);
     addParameter(m_pThreshold);
     addParameter(m_pGain);
     addParameter(m_pWaveform);
+    addParameter(m_pInputMode);
+    addParameter(m_pEnvAttack);
+    addParameter(m_pEnvRelease);
 }
 
 CrashSyncAudioProcessor::~CrashSyncAudioProcessor()
@@ -102,8 +108,7 @@ void CrashSyncAudioProcessor::changeProgramName (int index, const juce::String& 
 //==============================================================================
 void CrashSyncAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    m_EnvelopeFollower.setAttackTimeMs(sampleRate);
     m_Oscillator.setSamplerate(sampleRate);
     m_Oscillator.reset();
 }
@@ -151,8 +156,10 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         buffer.clear (i, 0, buffer.getNumSamples());
 
     // subrate
-    m_Oscillator.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 17900 + 100);
+    m_Oscillator.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19000 + 1000);
     m_Oscillator.setWaveform(static_cast<int>(m_pWaveform->get() * (SCOscillator::numWaveforms - 1) + 0.5f));
+    m_EnvelopeFollower.setAttackTimeMs(m_pEnvAttack->get());
+    m_EnvelopeFollower.setReleaseTimeMs(m_pEnvRelease->get());
 
     const float* inputL = buffer.getReadPointer(0);
     const float* inputR = buffer.getReadPointer(1);
@@ -168,6 +175,11 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
         sig *= gain;
         sig = (sig > 1.f) ? 1.f : sig;
         sig = (sig < 0) ? -1.f : sig;        
+
+        if(m_pInputMode->get() == kInputModeEnvelope)
+        {
+            sig = m_EnvelopeFollower.process(sig);
+        }
 
         // check for reset
         if(sig <= m_pThreshold->get()) // parameterize this threshold

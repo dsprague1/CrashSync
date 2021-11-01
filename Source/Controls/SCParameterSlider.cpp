@@ -46,10 +46,15 @@ void SCParameterSlider::controlValueChanged()
 
 void SCParameterSlider::updateControl()
 {
-    //setValue(getParameter()->getValue(), juce::dontSendNotification);
+    triggerAsyncUpdate();
 }
 
 void SCParameterSlider::valueChanged()
 {
     controlValueChanged();
+}
+
+void SCParameterSlider::handleAsyncUpdate() 
+{
+    setValue(getParameter()->getValue(), juce::dontSendNotification);
 }

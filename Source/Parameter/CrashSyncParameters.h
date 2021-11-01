@@ -16,5 +16,8 @@ enum
     kCrashSyncParamThreshold,
     kCrashSyncParamGain,
     kCrashSyncParamWaveform,
+    kCrashSyncParamInputMode,
+    kCrashSyncParamAttack,
+    kCrashSyncParamRelease,
     kNumCrashSyncParams
 };

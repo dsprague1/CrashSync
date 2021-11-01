@@ -4,10 +4,6 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="g0GhhB" name="CrashSync">
     <GROUP id="{37164EE1-0BC6-D505-7952-5CF5EE7C0DF6}" name="Source">
-      <GROUP id="{A2178890-B1E1-C7FB-2693-8D5CD5A1D173}" name="Parameter">
-        <FILE id="T4D0Gy" name="CrashSyncParameters.h" compile="0" resource="0"
-              file="Source/Parameter/CrashSyncParameters.h"/>
-      </GROUP>
       <GROUP id="{C665FF01-C664-1B01-6C8B-88C98A2305B2}" name="Controls">
         <FILE id="YW9LnU" name="SCControlBase.h" compile="0" resource="0" file="Source/Controls/SCControlBase.h"/>
         <FILE id="dKW7eB" name="SCParameterSlider.cpp" compile="1" resource="0"
@@ -15,16 +11,24 @@
         <FILE id="Do1kbd" name="SCParameterSlider.h" compile="0" resource="0"
               file="Source/Controls/SCParameterSlider.h"/>
       </GROUP>
-      <FILE id="tl2Mb7" name="SCOscillator.h" compile="0" resource="0" file="Source/SCOscillator.h"/>
-      <FILE id="zm7Qre" name="SCOscillator.cpp" compile="1" resource="0"
-            file="Source/SCOscillator.cpp"/>
+      <GROUP id="{A2178890-B1E1-C7FB-2693-8D5CD5A1D173}" name="Parameter">
+        <FILE id="T4D0Gy" name="CrashSyncParameters.h" compile="0" resource="0"
+              file="Source/Parameter/CrashSyncParameters.h"/>
+      </GROUP>
+      <FILE id="Vcaj3Z" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="ZdNtyo" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       <FILE id="qt6YYa" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="HTjJXc" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="Vcaj3Z" name="PluginEditor.cpp" compile="1" resource="0"
-            file="Source/PluginEditor.cpp"/>
-      <FILE id="ZdNtyo" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="IzT3cD" name="SCEnvelopeFollower.cpp" compile="1" resource="0"
+            file="Source/SCEnvelopeFollower.cpp"/>
+      <FILE id="K9oT42" name="SCEnvelopeFollower.h" compile="0" resource="0"
+            file="Source/SCEnvelopeFollower.h"/>
+      <FILE id="zm7Qre" name="SCOscillator.cpp" compile="1" resource="0"
+            file="Source/SCOscillator.cpp"/>
+      <FILE id="tl2Mb7" name="SCOscillator.h" compile="0" resource="0" file="Source/SCOscillator.h"/>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>

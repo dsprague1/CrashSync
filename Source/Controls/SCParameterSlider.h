@@ -13,7 +13,7 @@
 #include "JuceHeader.h"
 #include "SCControlBase.h"
 
-class SCParameterSlider : public juce::Slider, public SCControlBase
+class SCParameterSlider : public juce::Slider, public SCControlBase, public juce::AsyncUpdater
 {
 public:
     SCParameterSlider();
@@ -26,6 +26,8 @@ public:
     // slider class overrides
     virtual void valueChanged() override;
 
+    // async
+    virtual void handleAsyncUpdate() override;
 private:
     bool m_bIsDragging;
 };

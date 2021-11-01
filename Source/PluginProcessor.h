@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "SCOscillator.h"
+#include "SCEnvelopeFollower.h"
 
 //==============================================================================
 /**
@@ -17,6 +18,13 @@
 class CrashSyncAudioProcessor  : public juce::AudioProcessor
 {
 public:
+    enum
+    {
+        kInputModeNormal,
+        kInputModeEnvelope,
+        kNumInputMode
+    };
+
     //==============================================================================
     CrashSyncAudioProcessor();
     ~CrashSyncAudioProcessor() override;
@@ -60,9 +68,13 @@ private:
     juce::AudioParameterFloat * m_pFrequency;
     juce::AudioParameterFloat * m_pThreshold;
     juce::AudioParameterFloat * m_pGain;
+    juce::AudioParameterFloat * m_pEnvAttack;
+    juce::AudioParameterFloat * m_pEnvRelease;
     juce::AudioParameterInt * m_pWaveform;
+    juce::AudioParameterInt * m_pInputMode;
 
     SCOscillator m_Oscillator;
+    SCEnvelopeFollower m_EnvelopeFollower;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrashSyncAudioProcessor)

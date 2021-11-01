@@ -20,11 +20,17 @@ CrashSyncAudioProcessorEditor::CrashSyncAudioProcessorEditor (CrashSyncAudioProc
     m_pThresholdSlider.reset(new SCParameterSlider(params[kCrashSyncParamThreshold]));
     m_pGainSlider.reset(new SCParameterSlider(params[kCrashSyncParamGain]));
     m_pWaveformSlider.reset(new SCParameterSlider(params[kCrashSyncParamWaveform]));
+    m_pInputMode.reset(new SCParameterSlider(params[kCrashSyncParamInputMode]));
+    m_pAttackSlider.reset(new SCParameterSlider(params[kCrashSyncParamAttack]));
+    m_pReleaseSlider.reset(new SCParameterSlider(params[kCrashSyncParamRelease]));
 
     addAndMakeVisible(m_pFrequencySlider.get());
     addAndMakeVisible(m_pThresholdSlider.get());
     addAndMakeVisible(m_pGainSlider.get());
     addAndMakeVisible(m_pWaveformSlider.get());
+    addAndMakeVisible(m_pInputMode.get());
+    addAndMakeVisible(m_pAttackSlider.get());
+    addAndMakeVisible(m_pReleaseSlider.get());
 
     setSize (400, 300);
 }
@@ -47,4 +53,7 @@ void CrashSyncAudioProcessorEditor::resized()
     m_pThresholdSlider->setBounds(10, 30, 200, 15);
     m_pGainSlider->setBounds(10, 50, 200, 15);
     m_pWaveformSlider->setBounds(10, 70, 200, 15);
+    m_pInputMode->setBounds(10, 90, 200, 15);
+    m_pAttackSlider->setBounds(10, 110, 200, 15);
+    m_pReleaseSlider->setBounds(10, 130, 200, 15);
 }
