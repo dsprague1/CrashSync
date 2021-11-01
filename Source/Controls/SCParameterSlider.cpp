@@ -1,0 +1,55 @@
+/*
+  ==============================================================================
+
+    SCParameterSlider.cpp
+    Created: 1 Nov 2021 9:03:08am
+    Author:  dspra
+
+  ==============================================================================
+*/
+
+#include "SCParameterSlider.h"
+
+SCParameterSlider::SCParameterSlider::SCParameterSlider():
+SCControlBase(),
+m_bIsDragging(false)
+{
+    setRange(0.0, 1.0);
+    setDoubleClickReturnValue(true, 0);
+    setScrollWheelEnabled(false);
+}
+
+SCParameterSlider::SCParameterSlider(juce::AudioProcessorParameter * parameter):
+SCControlBase(parameter),
+m_bIsDragging(false)
+{
+    setRange(0.0, 1.0, 1.0 / (getParameter()->getNumSteps() - 1.0));
+    setDoubleClickReturnValue(true, getParameter()->getDefaultValue());
+    setScrollWheelEnabled(false);
+}
+
+void SCParameterSlider::controlValueChanged()
+{
+    float newVal = static_cast<float>(getValue());
+
+    if(getParameter()->getValue() != newVal)
+    {
+        if(!m_bIsDragging)
+            getParameter()->beginChangeGesture();
+
+        getParameter()->setValueNotifyingHost(newVal);
+
+        if(!m_bIsDragging)
+            getParameter()->endChangeGesture();
+    }
+}
+
+void SCParameterSlider::updateControl()
+{
+    //setValue(getParameter()->getValue(), juce::dontSendNotification);
+}
+
+void SCParameterSlider::valueChanged()
+{
+    controlValueChanged();
+}

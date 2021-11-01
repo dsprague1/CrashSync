@@ -22,6 +22,15 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
                        )
 #endif
 {
+    m_pFrequency = new juce::AudioParameterFloat("frequency", "Frequency", 0.0f, 1.0f, 0.0f);
+    m_pThreshold = new juce::AudioParameterFloat("threshold", "Threshold", 0.0f, 1.0f, 0.0f);
+    m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.0f);
+    m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::WaveformTri, SCOscillator::numWaveforms, SCOscillator::WaveformSaw);
+
+    addParameter(m_pFrequency);
+    addParameter(m_pThreshold);
+    addParameter(m_pGain);
+    addParameter(m_pWaveform);
 }
 
 CrashSyncAudioProcessor::~CrashSyncAudioProcessor()
@@ -95,8 +104,8 @@ void CrashSyncAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 {
     // Use this method as the place to do any pre-playback
     // initialisation that you need..
+    m_Oscillator.setSamplerate(sampleRate);
     m_Oscillator.reset();
-    m_Oscillator.setFrequency(440.f);
 }
 
 void CrashSyncAudioProcessor::releaseResources()
@@ -137,37 +146,31 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     auto totalNumInputChannels  = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
+    // In case we have more outputs than inputs
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    float* outputL = buffer.getWritePointer(0);
-    float* outputR = buffer.getWritePointer(1);
+    // subrate
+    m_Oscillator.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 17900 + 100);
+    m_Oscillator.setWaveform(static_cast<int>(m_pWaveform->get() * (SCOscillator::numWaveforms - 1) + 0.5f));
 
     const float* inputL = buffer.getReadPointer(0);
     const float* inputR = buffer.getReadPointer(1);
+    float* outputL = buffer.getWritePointer(0);
+    float* outputR = buffer.getWritePointer(1);
+
     for(int i = 0; i < buffer.getNumSamples(); i++)
     {
-        float sig = (*(inputL+i) + *(inputR+i)) * 0.5f;
+        float sig = (*(inputL + i) + *(inputR + i)) * 0.5f;
         
         // fuzz section
-        sig *= 40.f;
+        float gain = 0.5f + 39.5f * m_pGain->get();
+        sig *= gain;
         sig = (sig > 1.f) ? 1.f : sig;
-        sig = (sig < 0) ? 0 : sig;
+        sig = (sig < 0) ? -1.f : sig;        
 
         // check for reset
-        if(sig <= 0.f) // parameterize this threshold
+        if(sig <= m_pThreshold->get()) // parameterize this threshold
         {
             m_Oscillator.reset();
         }

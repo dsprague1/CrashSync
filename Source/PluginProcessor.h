@@ -55,6 +55,13 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
 private:
+
+    // parameters
+    juce::AudioParameterFloat * m_pFrequency;
+    juce::AudioParameterFloat * m_pThreshold;
+    juce::AudioParameterFloat * m_pGain;
+    juce::AudioParameterInt * m_pWaveform;
+
     SCOscillator m_Oscillator;
 
     //==============================================================================
