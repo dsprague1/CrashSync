@@ -72,6 +72,7 @@ private:
     juce::AudioParameterFloat * m_pEnvRelease;
     juce::AudioParameterInt * m_pWaveform;
     juce::AudioParameterInt * m_pInputMode;
+    juce::AudioParameterInt * m_pPolyBlep;
 
     SCOscillator m_Oscillator;
     SCEnvelopeFollower m_EnvelopeFollower;

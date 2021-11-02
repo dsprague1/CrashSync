@@ -6,19 +6,20 @@ class SCOscillator
 public:
 	enum Waveform
 	{
-		WaveformTri,
-		WaveformSaw,
-		WaveformSquare,
+		kWaveformTri,
+		kWaveformSaw,
+		kWaveformSquare,
 		numWaveforms
 	};
 
-	SCOscillator(int waveform = WaveformSaw, bool isBipolar = true);
+	SCOscillator(int waveform = kWaveformSaw, bool isBipolar = true);
 	~SCOscillator();
 
 	void setSamplerate(int samplerate) { m_nSamplerate = samplerate;  setFrequency(m_fFrequency);  }
 	void setFrequency(float frequency);
 	void setIsBipolar(bool isBipolar) { m_bIsBipolar = isBipolar; }
 	void setWaveform(int wave) { m_nWaveform = wave; }
+	void setApplyPolyBlep(bool applyPolyBlep) { m_bApplyPolyBlep = applyPolyBlep; }
 
 	int32_t getPhase() { return m_nPhase; }
 
@@ -27,8 +28,8 @@ public:
 	float process();
 
 private:
-	inline int32_t IncrementAndCookWaveform();
-	inline int32_t CookWaveform(int32_t value);
+	inline float cookWaveform(float value);
+	inline float applyPolyBlep(float value);
 
 	int32_t m_nPhase;
 	int32_t m_nIncrement;
@@ -39,5 +40,6 @@ private:
 	float m_fSmoothedOut;
 	bool m_bIsBipolar;
 	bool m_bIsResetState;
+	bool m_bApplyPolyBlep;
 };
 

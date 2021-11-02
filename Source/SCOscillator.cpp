@@ -6,7 +6,8 @@ m_nPhase(0),
 m_nIncrement(0),
 m_bIsBipolar(isBipolar),
 m_nWaveform(waveform),
-m_nSamplerate(44100)
+m_nSamplerate(44100),
+m_bApplyPolyBlep(false)
 {
 
 }
@@ -27,7 +28,7 @@ void SCOscillator::reset(bool state)
 	m_bIsResetState = state;
 	if(state)
 	{
-		m_fSmoothedOutZ = CookWaveform(m_nPhase) / static_cast<float>(0x7FFFFFFF);
+		m_fSmoothedOutZ = cookWaveform(m_nPhase / static_cast<float>(0x7FFFFFFF));
 	}
 	m_nPhase = 0;
 }
@@ -41,51 +42,75 @@ float SCOscillator::process()
 	}
 	else
 	{
-		int32_t currentValue = IncrementAndCookWaveform();
-		float bipolarValue = static_cast<float>(currentValue) / 0x7FFFFFFF;
+		float sample = static_cast<float>(m_nPhase) / 0x7FFFFFFF;
+		sample = cookWaveform(sample);
+		sample = (m_bApplyPolyBlep) ? applyPolyBlep(sample) : sample;
+
+		m_nPhase += m_nIncrement;
+
 		if(m_bIsBipolar)
 		{
-			return bipolarValue;
+			return sample;
 		}
 		else
 		{
-			return (bipolarValue + 1) * 0.5;
+			return (sample + 1.f) * 0.5;
 		}
 	}
 }
 
-inline int32_t SCOscillator::IncrementAndCookWaveform()
-{
-	int32_t value = m_nPhase;
-	m_nPhase += m_nIncrement;
-
-	return CookWaveform(value);
-}
-
-inline int32_t SCOscillator::CookWaveform(int32_t value)
+// expects -1 to 1
+inline float SCOscillator::cookWaveform(float value)
 {
 	switch(m_nWaveform)
 	{
-	case WaveformTri:
+		case kWaveformTri:
+		{
+			return fabs(value) * 2.f -1.f;
+			break;
+		}
+
+		case kWaveformSaw:
+		{
+			return value;
+			break;
+		}
+
+		case kWaveformSquare:
+		{
+			return (value > 0) ? 1.f : (value < 0) ? -1.f : 0;
+			break;
+		}
+
+		default:
+			return value;
+			break;
+	}
+}
+
+inline float SCOscillator::applyPolyBlep(float value)
+{
+	float correction = 0.f;
+
+	int32_t previous = m_nPhase - m_nIncrement;
+	int32_t next = m_nPhase + m_nIncrement;
+
+	// check if before or after continuity, and calculate the residual based on that
+	if(m_nPhase > 0 && next < 0) // before discontinuity?
 	{
-		return static_cast<uint32_t>((abs(value) - 0x3FFFFFFF) * 2);
-		break;
+		float t = static_cast<float>(m_nPhase - 0x7FFFFFFF) / m_nIncrement;
+		correction = t * t + 2.f * t + 1.f;
+	}
+	else if(m_nPhase < 0 && previous > 0)
+	{
+		float t = static_cast<float>(m_nPhase + 0x7FFFFFFF) / m_nIncrement;
+		correction = 2.f * t - t * t - 1.f;
 	}
 
-	case WaveformSaw:
-	{
-		return value;
-		break;
-	}
+	// invert for falling edge
+	bool fallingEdge = (m_nWaveform == kWaveformSquare) ? (next < 0) : true;
+	if(fallingEdge)
+		correction *= -1.f;
 
-	case WaveformSquare:
-	{
-		return (value > 0) ? 0xFFFFFFFF : (value < 0) ? 0x7FFFFFFF : 0;
-		break;
-	}
-
-	default:
-		return value;
-		break;
-	}
+	return value + correction;
 }

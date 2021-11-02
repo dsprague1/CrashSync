@@ -25,10 +25,11 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     m_pFrequency = new juce::AudioParameterFloat("frequency", "Frequency", 0.0f, 1.0f, 0.0f);
     m_pThreshold = new juce::AudioParameterFloat("threshold", "Threshold", 0.0f, 1.0f, 0.0f);
     m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.0f);
-    m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::WaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::WaveformSaw);
+    m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::kWaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::kWaveformSaw);
     m_pInputMode = new juce::AudioParameterInt("input_mode", "Input Mode", kInputModeNormal, kNumInputMode - 1, kInputModeNormal);
     m_pEnvAttack = new juce::AudioParameterFloat("env_attack", "Env Attack", 0.f, 1.f, 0.1);
     m_pEnvRelease = new juce::AudioParameterFloat("env_release", "Env Release", 0.f, 1.f, 0.1);
+    m_pPolyBlep = new juce::AudioParameterInt("polyblep", "PolyBLEP", 0.f, 1.f, 0);
 
     addParameter(m_pFrequency);
     addParameter(m_pThreshold);
@@ -37,6 +38,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     addParameter(m_pInputMode);
     addParameter(m_pEnvAttack);
     addParameter(m_pEnvRelease);
+    addParameter(m_pPolyBlep);
 }
 
 CrashSyncAudioProcessor::~CrashSyncAudioProcessor()
@@ -158,6 +160,7 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     // subrate
     m_Oscillator.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19000 + 1000);
     m_Oscillator.setWaveform(static_cast<int>(m_pWaveform->get() * (SCOscillator::numWaveforms - 1) + 0.5f));
+    m_Oscillator.setApplyPolyBlep(m_pPolyBlep->get());
     m_EnvelopeFollower.setAttackTimeMs(m_pEnvAttack->get());
     m_EnvelopeFollower.setReleaseTimeMs(m_pEnvRelease->get());
 

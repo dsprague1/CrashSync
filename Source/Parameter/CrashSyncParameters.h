@@ -19,5 +19,6 @@ enum
     kCrashSyncParamInputMode,
     kCrashSyncParamAttack,
     kCrashSyncParamRelease,
+    kCrashSyncParamPolyBlep,
     kNumCrashSyncParams
 };
