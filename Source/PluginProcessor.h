@@ -11,10 +11,13 @@
 #include <JuceHeader.h>
 #include "SCOscillator.h"
 #include "SCEnvelopeFollower.h"
+#include "Decimator.h"
+#include "Interpolator.h"
 
 //==============================================================================
 /**
 */
+#define OversamplingIRLength 512
 class CrashSyncAudioProcessor  : public juce::AudioProcessor
 {
 public:
@@ -71,12 +74,29 @@ private:
     juce::AudioParameterFloat * m_pEnvAttack;
     juce::AudioParameterFloat * m_pEnvRelease;
     juce::AudioParameterFloat * m_pPulseWidth;
+    juce::AudioParameterFloat * m_pOutputVolume;
+    juce::AudioParameterFloat * m_pTone;
     juce::AudioParameterInt * m_pWaveform;
     juce::AudioParameterInt * m_pInputMode;
     juce::AudioParameterInt * m_pPolyBlep;
 
     SCOscillator m_Oscillator;
     SCEnvelopeFollower m_EnvelopeFollower;
+
+    CInterpolator m_Interpolator;
+    CDecimator m_Decimator;
+
+    float * m_pLeftInterpBuffer;
+    float * m_pRightInterpBuffer;
+    float * m_pLeftDecipBuffer;
+    float * m_pRightDeciBuffer;
+    float m_h_Left[1024];
+    float m_h_Right[1024];
+    int m_nOversamplingRatio;
+
+    float m_fFilterZ;
+    float m_fFilterA0;
+    float m_fFilterB1;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrashSyncAudioProcessor)
