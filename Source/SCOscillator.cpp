@@ -1,13 +1,22 @@
 #include <cmath>
 #include "SCOscillator.h"
 
+#define USE_PW 0
+
 SCOscillator::SCOscillator(int waveform, bool isBipolar) :
 m_nPhase(0), 
 m_nIncrement(0),
 m_bIsBipolar(isBipolar),
 m_nWaveform(waveform),
 m_nSamplerate(44100),
-m_bApplyPolyBlep(false)
+m_bApplyPolyBlep(false),
+m_nPwLeftInc(0),
+m_nPwRightInc(0),
+m_bIsResetState(0),
+m_bPulseWidthFlag(0),
+m_fPulseWidth(0.5f),
+m_nPwPhase(0),
+m_fFrequency(440)
 {
 
 }
@@ -21,6 +30,10 @@ void SCOscillator::setFrequency(float frequency)
 {
 	m_fFrequency = frequency; 
 	m_nIncrement = static_cast<int32_t>(frequency / static_cast<float>(m_nSamplerate) * static_cast<float>(0x7FFFFFFF));
+	
+#if USE_PW
+	cookPulseWidth();
+#endif
 }
 
 void SCOscillator::reset(bool state)
@@ -31,6 +44,7 @@ void SCOscillator::reset(bool state)
 		m_fSmoothedOutZ = cookWaveform(m_nPhase / static_cast<float>(0x7FFFFFFF));
 	}
 	m_nPhase = 0;
+	m_nPwPhase = 0;
 }
 
 float SCOscillator::process()
@@ -47,6 +61,13 @@ float SCOscillator::process()
 		sample = (m_bApplyPolyBlep) ? applyPolyBlep(sample) : sample;
 
 		m_nPhase += m_nIncrement;
+		int32_t pwPrev = m_nPwPhase;
+
+#if USE_PW
+		m_nPwPhase += (m_bPulseWidthFlag) ? m_nPwLeftInc : m_nPwRightInc;
+		m_bPulseWidthFlag = (pwPrev > 0 && m_nPwPhase < 0) ? !m_bPulseWidthFlag : m_bPulseWidthFlag;
+		sample *= m_bPulseWidthFlag;
+#endif
 
 		if(m_bIsBipolar)
 		{
@@ -57,6 +78,15 @@ float SCOscillator::process()
 			return (sample + 1.f) * 0.5;
 		}
 	}
+}
+
+void SCOscillator::cookPulseWidth()
+{
+	float pwRatioLeft = 1.f / (m_fPulseWidth * 0.5);
+	float pwRatioRight = m_fPulseWidth;
+
+	m_nPwLeftInc = m_nIncrement * pwRatioLeft;//static_cast<int32_t>((m_fFrequency * pwRatioLeft) / static_cast<float>(m_nSamplerate) * static_cast<float>(0x7FFFFFFF));
+	m_nPwRightInc = m_nIncrement * pwRatioRight;//(m_nIncrement * 2) - m_nPwLeftInc; // static_cast<int32_t>((m_fFrequency * pwRatioRight) / static_cast<float>(m_nSamplerate) * static_cast<float>(0x7FFFFFFF));
 }
 
 // expects -1 to 1

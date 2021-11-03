@@ -24,6 +24,7 @@ CrashSyncAudioProcessorEditor::CrashSyncAudioProcessorEditor (CrashSyncAudioProc
     m_pAttackSlider.reset(new SCParameterSlider(params[kCrashSyncParamAttack]));
     m_pReleaseSlider.reset(new SCParameterSlider(params[kCrashSyncParamRelease]));
     m_pPolyBlepSlider.reset(new SCParameterSlider(params[kCrashSyncParamPolyBlep]));
+    m_pPulseWidthSlider.reset(new SCParameterSlider(params[kCrashSyncParamPulseWidth]));
 
     addAndMakeVisible(m_pFrequencySlider.get());
     addAndMakeVisible(m_pThresholdSlider.get());
@@ -33,6 +34,7 @@ CrashSyncAudioProcessorEditor::CrashSyncAudioProcessorEditor (CrashSyncAudioProc
     addAndMakeVisible(m_pAttackSlider.get());
     addAndMakeVisible(m_pReleaseSlider.get());
     addAndMakeVisible(m_pPolyBlepSlider.get());
+    addAndMakeVisible(m_pPulseWidthSlider.get());
 
     setSize (400, 300);
 }
@@ -59,4 +61,5 @@ void CrashSyncAudioProcessorEditor::resized()
     m_pAttackSlider->setBounds(10, 110, 200, 15);
     m_pReleaseSlider->setBounds(10, 130, 200, 15);
     m_pPolyBlepSlider->setBounds(10, 150, 200, 15);
+    m_pPulseWidthSlider->setBounds(10, 170, 200, 15);
 }

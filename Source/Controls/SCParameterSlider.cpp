@@ -26,6 +26,8 @@ m_bIsDragging(false)
     setRange(0.0, 1.0, 1.0 / (getParameter()->getNumSteps() - 1.0));
     setDoubleClickReturnValue(true, getParameter()->getDefaultValue());
     setScrollWheelEnabled(false);
+
+    setValue(getParameter()->getValue(), juce::dontSendNotification);
 }
 
 void SCParameterSlider::controlValueChanged()

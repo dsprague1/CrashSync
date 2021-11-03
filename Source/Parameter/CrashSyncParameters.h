@@ -20,5 +20,8 @@ enum
     kCrashSyncParamAttack,
     kCrashSyncParamRelease,
     kCrashSyncParamPolyBlep,
+    kCrashSyncParamPulseWidth,
+    kCrashSyncParamOutputVolume,
+    kCrashSyncParamTone,
     kNumCrashSyncParams
 };

@@ -70,6 +70,7 @@ private:
     juce::AudioParameterFloat * m_pGain;
     juce::AudioParameterFloat * m_pEnvAttack;
     juce::AudioParameterFloat * m_pEnvRelease;
+    juce::AudioParameterFloat * m_pPulseWidth;
     juce::AudioParameterInt * m_pWaveform;
     juce::AudioParameterInt * m_pInputMode;
     juce::AudioParameterInt * m_pPolyBlep;

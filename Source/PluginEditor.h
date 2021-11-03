@@ -39,6 +39,7 @@ private:
     std::unique_ptr<SCParameterSlider> m_pAttackSlider;
     std::unique_ptr<SCParameterSlider> m_pReleaseSlider;
     std::unique_ptr<SCParameterSlider> m_pPolyBlepSlider;
+    std::unique_ptr<SCParameterSlider> m_pPulseWidthSlider;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrashSyncAudioProcessorEditor)
 };
