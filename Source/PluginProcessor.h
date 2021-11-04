@@ -90,16 +90,7 @@ private:
     SCOnePoleFilter m_FilterL;
     SCOnePoleFilter m_FilterR;
 
-    CInterpolator m_Interpolator;
-    CDecimator m_Decimator;
-
-    float * m_pLeftInterpBuffer;
-    float * m_pRightInterpBuffer;
-    float * m_pLeftDecipBuffer;
-    float * m_pRightDeciBuffer;
-    float m_h_Left[OversamplingIRLength];
-    float m_h_Right[OversamplingIRLength];
-    int m_nOversamplingRatio;
+    std::unique_ptr<juce::dsp::Oversampling<float>> m_pOversampler;
 
     //=============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(CrashSyncAudioProcessor)
