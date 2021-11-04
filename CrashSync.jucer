@@ -26,6 +26,10 @@
             file="Source/SCEnvelopeFollower.cpp"/>
       <FILE id="K9oT42" name="SCEnvelopeFollower.h" compile="0" resource="0"
             file="Source/SCEnvelopeFollower.h"/>
+      <FILE id="bWzM0z" name="SCOnePoleFilter.cpp" compile="1" resource="0"
+            file="Source/SCOnePoleFilter.cpp"/>
+      <FILE id="DICAvG" name="SCOnePoleFilter.h" compile="0" resource="0"
+            file="Source/SCOnePoleFilter.h"/>
       <FILE id="zm7Qre" name="SCOscillator.cpp" compile="1" resource="0"
             file="Source/SCOscillator.cpp"/>
       <FILE id="tl2Mb7" name="SCOscillator.h" compile="0" resource="0" file="Source/SCOscillator.h"/>
