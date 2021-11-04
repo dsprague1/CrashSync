@@ -1,5 +1,4 @@
 #pragma once
-#include "pluginconstants.h"
 #include "RateConvertor.h"
 
 class CInterpolator : public CRateConvertor

@@ -1,5 +1,6 @@
 #include <cmath>
 #include "SCOscillator.h"
+#include "SCSmoothingFilter.h"
 
 #define USE_PW 0
 
@@ -18,12 +19,19 @@ m_fPulseWidth(0.5f),
 m_nPwPhase(0),
 m_fFrequency(440)
 {
-
+	m_pOutputSmoother.reset(new SCSmoothingFilter());
 }
 
 SCOscillator::~SCOscillator() 
 {
 
+}
+
+void SCOscillator::setSamplerate(int samplerate)
+{ 
+	m_nSamplerate = samplerate;  
+	setFrequency(m_fFrequency);  
+	m_pOutputSmoother->setSamplerate(samplerate);
 }
 
 void SCOscillator::setFrequency(float frequency)
@@ -41,7 +49,7 @@ void SCOscillator::reset(bool state)
 	m_bIsResetState = state;
 	if(state)
 	{
-		m_fSmoothedOutZ = cookWaveform(m_nPhase / static_cast<float>(0x7FFFFFFF));
+		m_pOutputSmoother->setStartValue(cookWaveform(m_nPhase / static_cast<float>(0x7FFFFFFF)));
 	}
 	m_nPhase = 0;
 	m_nPwPhase = 0;
@@ -51,8 +59,7 @@ float SCOscillator::process()
 {	
 	if(m_bIsResetState)
 	{
-		m_fSmoothedOutZ *= 0.001;
-		return m_fSmoothedOutZ;
+		return m_pOutputSmoother->process(0.f);
 	}
 	else
 	{

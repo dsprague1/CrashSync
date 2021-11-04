@@ -1,5 +1,8 @@
 #pragma once
 #include <cstdint>
+#include <memory>
+
+class SCSmoothingFilter;
 
 class SCOscillator
 {
@@ -15,7 +18,7 @@ public:
 	SCOscillator(int waveform = kWaveformSaw, bool isBipolar = true);
 	~SCOscillator();
 
-	void setSamplerate(int samplerate) { m_nSamplerate = samplerate;  setFrequency(m_fFrequency);  }
+	void setSamplerate(int samplerate);
 	void setFrequency(float frequency);
 	void setIsBipolar(bool isBipolar) { m_bIsBipolar = isBipolar; }
 	void setWaveform(int wave) { m_nWaveform = wave; }
@@ -41,12 +44,12 @@ private:
 	int32_t m_nSamplerate;
 	uint32_t m_nWaveform;
 	float m_fFrequency;
-	float m_fSmoothedOutZ;
-	float m_fSmoothedOut;
 	float m_fPulseWidth;
 	bool m_bIsBipolar;
 	bool m_bIsResetState;
 	bool m_bApplyPolyBlep;
 	bool m_bPulseWidthFlag;
+
+	std::unique_ptr<SCSmoothingFilter> m_pOutputSmoother;
 };
 

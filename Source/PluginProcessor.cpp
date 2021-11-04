@@ -730,7 +730,7 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     m_EnvelopeFollower.setReleaseTimeMs(m_pEnvRelease->get());
 
     float cutoff = m_pTone->get() * m_pTone->get();
-    cutoff = (20.f + 19980.f * cutoff) / getSampleRate();
+    cutoff = (20.f + (19980.f * cutoff)) / getSampleRate();
     m_fFilterB1 = exp(-2.f * PI * cutoff);
     m_fFilterA0 = 1.0 - m_fFilterB1;
 
@@ -741,31 +741,41 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 
     for(int i = 0; i < buffer.getNumSamples(); i++)
     {
-        float sig = (*(inputL + i) + *(inputR + i)) * 0.5f;
-        
-        // fuzz section
-        float gain = 0.5f + 39.5f * m_pGain->get();
-        sig *= gain;
-        sig = (sig > 1.f) ? 1.f : sig;
-        sig = (sig < 0) ? -1.f : sig;        
+		m_Interpolator.interpolateSamples(*(inputL + i), *(inputR + i), m_pLeftInterpBuffer, m_pRightInterpBuffer);
+		for(int j = 0; j < m_nOversamplingRatio; j++)
+		{
+			float sig = (m_pLeftInterpBuffer[j] + m_pRightInterpBuffer[j]) * 0.5f;
 
-        if(m_pInputMode->get() == kInputModeEnvelope)
-        {
-            sig = m_EnvelopeFollower.process(sig);
-        }
+			// fuzz section
+			float gain = 0.5f + 39.5f * m_pGain->get();
+			sig *= gain;
+			sig = (sig > 1.f) ? 1.f : sig;
+			sig = (sig < 0) ? -1.f : sig;
 
-        // check for reset
-        if(sig <= m_pThreshold->get())
-        {
-            m_Oscillator.reset(true);
-        }
-        else
-        {
-            m_Oscillator.setResetState(false);
-        }
+			if(m_pInputMode->get() == kInputModeEnvelope)
+			{
+				sig = m_EnvelopeFollower.process(sig);
+			}
 
-        sig = m_Oscillator.process();
-        m_fFilterZ = sig * m_fFilterA0 + m_fFilterZ * m_fFilterB1;
+			// check for reset
+			if(sig <= m_pThreshold->get())
+			{
+				m_Oscillator.reset(true);
+			}
+			else
+			{
+				m_Oscillator.setResetState(false);
+			}
+
+			m_pLeftDecipBuffer[i] = sig;
+			m_pRightDeciBuffer[i] = sig;
+		}
+		
+		float outL, outR;
+		// decimate them
+		m_Decimator.decimateSamples(m_pLeftDecipBuffer, m_pRightDeciBuffer, outL, outR);
+
+        m_fFilterZ = ((outL + outR) * 0.5f) * m_fFilterA0 + m_fFilterZ * m_fFilterB1;
 
         *outputL++ = m_fFilterZ * m_pOutputVolume->get();
         *outputR++ = m_fFilterZ * m_pOutputVolume->get();

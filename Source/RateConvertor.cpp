@@ -1,12 +1,12 @@
 #include "RateConvertor.h"
-
+#include <string>
 
 CRateConvertor::CRateConvertor(void)
 {
-	m_pIRBuffer = NULL;
+	m_pIRBuffer = nullptr;
 
-	m_pLeftInputBuffer = NULL;
-	m_pRightInputBuffer = NULL;
+	m_pLeftInputBuffer = nullptr;
+	m_pRightInputBuffer = nullptr;
 
 	m_nL = 1; 
 	m_nIRLength = 0;

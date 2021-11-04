@@ -29,6 +29,10 @@
       <FILE id="zm7Qre" name="SCOscillator.cpp" compile="1" resource="0"
             file="Source/SCOscillator.cpp"/>
       <FILE id="tl2Mb7" name="SCOscillator.h" compile="0" resource="0" file="Source/SCOscillator.h"/>
+      <FILE id="ZwZrAF" name="SCSmoothingFilter.cpp" compile="1" resource="0"
+            file="Source/SCSmoothingFilter.cpp"/>
+      <FILE id="tFP3Rz" name="SCSmoothingFilter.h" compile="0" resource="0"
+            file="Source/SCSmoothingFilter.h"/>
       <FILE id="kW9SCO" name="SCWavetableOsc.cpp" compile="1" resource="0"
             file="Source/SCWavetableOsc.cpp"/>
       <FILE id="LaA2u1" name="SCWavetableOsc.h" compile="0" resource="0"
