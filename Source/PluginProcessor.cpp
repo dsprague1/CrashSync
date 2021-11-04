@@ -185,12 +185,25 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 
 	processSubrate();
 
-	juce::dsp::AudioBlock<float> targetBlock = juce::dsp::AudioBlock<float>(buffer);
-	juce::dsp::AudioBlock<float> oversampleBuffer = m_pOversampler->processSamplesUp(targetBlock);
-	int numSamples = m_pOversample->get() ? oversampleBuffer.getNumSamples() : buffer.getNumSamples(); 
+	float * inputL = buffer.getWritePointer(0);
+	float * inputR = buffer.getWritePointer(1);
+	float * outputL = buffer.getWritePointer(0);
+	float * outputR = buffer.getWritePointer(1);
+	int numSamples = buffer.getNumSamples();
+	juce::dsp::AudioBlock<float> targetBlock;
+	juce::dsp::AudioBlock<float> oversampleBuffer;
 
-	float * inputL = oversampleBuffer.getChannelPointer(0);
-	float * inputR = oversampleBuffer.getChannelPointer(1);
+	if(m_pOversample->get())
+	{
+		targetBlock = juce::dsp::AudioBlock<float>(buffer);
+		oversampleBuffer = m_pOversampler->processSamplesUp(targetBlock);
+
+		inputL = oversampleBuffer.getChannelPointer(0);
+		inputR = oversampleBuffer.getChannelPointer(1);
+		outputL = oversampleBuffer.getChannelPointer(0);
+		outputR = oversampleBuffer.getChannelPointer(1);
+		numSamples = oversampleBuffer.getNumSamples();
+	}
 
     for(int i = 0; i < numSamples; i++)
     {
@@ -235,11 +248,14 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 		sigL = m_OscillatorL.process();
 		sigR = m_OscillatorR.process();
 		
-		*(inputL + i) = m_FilterL.process(sigL) * m_pOutputVolume->get();
-		*(inputR + i) = m_FilterR.process(sigR) * m_pOutputVolume->get();
+		*(outputL + i) = m_FilterL.process(sigL) * m_pOutputVolume->get();
+		*(outputR + i) = m_FilterR.process(sigR) * m_pOutputVolume->get();
     }
 
-	m_pOversampler->processSamplesDown(targetBlock);
+	if(m_pOversample->get())
+	{
+		m_pOversampler->processSamplesDown(targetBlock);
+	}
 }
 
 //==============================================================================
@@ -270,7 +286,7 @@ void CrashSyncAudioProcessor::setStateInformation (const void* data, int sizeInB
 void CrashSyncAudioProcessor::processSubrate()
 {
 	// subrate
-	const int samplerate = m_pOversample->get() ? getSampleRate() : getSampleRate() * std::pow(2, m_pOversampler->getOversamplingFactor());
+	const int samplerate = m_pOversample->get() ? getSampleRate() * m_pOversampler->getOversamplingFactor() : getSampleRate();
 
 	m_OscillatorL.setSamplerate(samplerate);
 	m_OscillatorR.setSamplerate(samplerate);
