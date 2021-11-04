@@ -31,7 +31,7 @@ float SCSmoothingFilter::process(float input)
     return m_fZ1;
 }
 
-void SCSmoothingFilter::setCoeffSec(float sec)
+void SCSmoothingFilter::setCoeffDbPerSec(float dbPerSec)
 {
-    m_fCoeff = std::expm1(-sec * std::log(10.f) / (20.f * m_nSamplerate));
+    m_fCoeff = std::expm1(-dbPerSec * std::log(10.f) / (20.f * m_nSamplerate));
 }

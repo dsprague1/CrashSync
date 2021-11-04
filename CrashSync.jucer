@@ -3,6 +3,7 @@
 <JUCERPROJECT id="CGhKkh" name="CrashSync" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="g0GhhB" name="CrashSync">
+    <GROUP id="{9DAD1CCB-1C0C-EB0B-E85F-97E2988C46D2}" name="Libraries"/>
     <GROUP id="{37164EE1-0BC6-D505-7952-5CF5EE7C0DF6}" name="Source">
       <GROUP id="{C665FF01-C664-1B01-6C8B-88C98A2305B2}" name="Controls">
         <FILE id="YW9LnU" name="SCControlBase.h" compile="0" resource="0" file="Source/Controls/SCControlBase.h"/>
@@ -55,7 +56,7 @@
   <EXPORTFORMATS>
     <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="CrashSync"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="CrashSync" headerPath="../../zita-resampler/source"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="CrashSync"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

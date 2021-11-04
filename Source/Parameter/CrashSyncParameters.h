@@ -23,5 +23,6 @@ enum
     kCrashSyncParamPulseWidth,
     kCrashSyncParamOutputVolume,
     kCrashSyncParamTone,
+    kCrashSyncParamOversample,
     kNumCrashSyncParams
 };

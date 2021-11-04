@@ -27,13 +27,14 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     m_pThreshold = new juce::AudioParameterFloat("threshold", "Threshold", 0.0f, 1.0f, 0.5f);
     m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.0f);
     m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::kWaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::kWaveformSaw);
-    m_pInputMode = new juce::AudioParameterInt("input_mode", "Input Mode", kInputModeNormal, kNumInputMode - 1, kInputModeNormal);
+    m_pInputMode = new juce::AudioParameterInt("input_mode", "Input Mode", kInputModeNormal, kNumInputModes - 1, kInputModeNormal);
     m_pEnvAttack = new juce::AudioParameterFloat("env_attack", "Env Attack", 0.f, 1.f, 0.1);
     m_pEnvRelease = new juce::AudioParameterFloat("env_release", "Env Release", 0.f, 1.f, 0.1);
     m_pPolyBlep = new juce::AudioParameterInt("polyblep", "PolyBLEP", 0.f, 1.f, 0);
     m_pPulseWidth = new juce::AudioParameterFloat("pulse_width", "Pulse Width", 0.f, 1.f, 0.5);
     m_pOutputVolume = new juce::AudioParameterFloat("output_volume", "Output Volume", 0.f, 1.f, 0.8);
     m_pTone = new juce::AudioParameterFloat("tone", "Tone", 0.f, 1.f, 0.8);
+	m_pOversample = new juce::AudioParameterInt("oversample", "Oversample", 0.f, 1.f, 0.0);
 
     addParameter(m_pFrequency);
     addParameter(m_pThreshold);
@@ -46,6 +47,9 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     addParameter(m_pPulseWidth);
     addParameter(m_pOutputVolume);
     addParameter(m_pTone);
+	addParameter(m_pOversample);
+
+	m_nOversamplingRatio = 4;
 
 	// now init the units
 	m_Interpolator.init(m_nOversamplingRatio, OversamplingIRLength, &m_h_Left[0]);
@@ -595,10 +599,10 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
 
 CrashSyncAudioProcessor::~CrashSyncAudioProcessor()
 {
-	if(m_pLeftInterpBuffer) delete[] m_pLeftInterpBuffer;
-	if(m_pRightInterpBuffer) delete[] m_pRightInterpBuffer;
-	if(m_pLeftDecipBuffer) delete[] m_pLeftDecipBuffer;
-	if(m_pRightDeciBuffer) delete[] m_pRightDeciBuffer;
+	if(m_pLeftInterpBuffer) delete [] m_pLeftInterpBuffer;
+	if(m_pRightInterpBuffer) delete [] m_pRightInterpBuffer;
+	if(m_pLeftDecipBuffer) delete [] m_pLeftDecipBuffer;
+	if(m_pRightDeciBuffer) delete [] m_pRightDeciBuffer;
 }
 
 //==============================================================================
@@ -722,36 +726,72 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
         buffer.clear (i, 0, buffer.getNumSamples());
 
-    // subrate
-    m_OscillatorL.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19000 + 1000);
-    m_OscillatorL.setWaveform(static_cast<int>(m_pWaveform->get() * (SCOscillator::numWaveforms - 1) + 0.5f));
-    m_OscillatorL.setApplyPolyBlep(m_pPolyBlep->get());
-    m_OscillatorL.setPulseWidth(m_pPulseWidth->get());
-	m_OscillatorR.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19000 + 1000);
-	m_OscillatorR.setWaveform(static_cast<int>(m_pWaveform->get() * (SCOscillator::numWaveforms - 1) + 0.5f));
-	m_OscillatorR.setApplyPolyBlep(m_pPolyBlep->get());
-	m_OscillatorR.setPulseWidth(m_pPulseWidth->get());
-    m_EnvelopeFollowerL.setAttackTimeMs(m_pEnvAttack->get());
-    m_EnvelopeFollowerL.setReleaseTimeMs(m_pEnvRelease->get());
-	m_EnvelopeFollowerR.setAttackTimeMs(m_pEnvAttack->get());
-	m_EnvelopeFollowerR.setReleaseTimeMs(m_pEnvRelease->get());
+	processSubrate();
 
-    float cutoff = m_pTone->get() * m_pTone->get();
-    cutoff = (20.f + (19980.f * cutoff)) / getSampleRate();
-
-    const float* inputL = buffer.getReadPointer(0);
-    const float* inputR = buffer.getReadPointer(1);
-    float* outputL = buffer.getWritePointer(0);
-    float* outputR = buffer.getWritePointer(1);
+    const float * inputL = buffer.getReadPointer(0);
+    const float * inputR = buffer.getReadPointer(1);
+    float * outputL = buffer.getWritePointer(0);
+    float * outputR = buffer.getWritePointer(1);
 
     for(int i = 0; i < buffer.getNumSamples(); i++)
     {
-		m_Interpolator.interpolateSamples(*(inputL + i), *(inputR + i), m_pLeftInterpBuffer, m_pRightInterpBuffer);
-		for(int j = 0; j < m_nOversamplingRatio; j++)
-		{
-			float sigL = m_pLeftInterpBuffer[j];
-			float sigR = m_pRightInterpBuffer[j];
+		float sigL = *(inputL + i);
+		float sigR = *(inputR + i);
 
+		if(m_pOversample->get())
+		{
+			// interpolate
+			m_Interpolator.interpolateSamples(sigL, sigR, m_pLeftInterpBuffer, m_pRightInterpBuffer);
+			
+			for(int j = 0; j < m_nOversamplingRatio; j++)
+			{
+				sigL = m_pLeftInterpBuffer[j];
+				sigR = m_pRightInterpBuffer[j];
+
+				// fuzz section
+				float gain = 0.5f + 39.5f * m_pGain->get();
+				sigL *= gain;
+				sigL = (sigL > 1.f) ? 1.f : sigL;
+				sigL = (sigL < 0) ? -1.f : sigL;
+
+				sigR *= gain;
+				sigR = (sigR > 1.f) ? 1.f : sigR;
+				sigR = (sigR < 0) ? -1.f : sigR;
+
+				if(m_pInputMode->get() == kInputModeEnvelope)
+				{
+					sigL = m_EnvelopeFollowerL.process(sigL);
+					sigR = m_EnvelopeFollowerR.process(sigR);
+				}
+
+				// check for reset
+				if(sigL <= m_pThreshold->get())
+				{
+					m_OscillatorL.reset(true);
+				}
+				else
+				{
+					m_OscillatorL.setResetState(false);
+				}
+
+				if(sigR <= m_pThreshold->get())
+				{
+					m_OscillatorR.reset(true);
+				}
+				else
+				{
+					m_OscillatorR.setResetState(false);
+				}
+
+				m_pLeftDecipBuffer[j] = m_OscillatorL.process();
+				m_pRightDeciBuffer[j] = m_OscillatorR.process();
+			}
+
+			// decimate 
+			m_Decimator.decimateSamples(m_pLeftDecipBuffer, m_pRightDeciBuffer, sigL, sigR); 
+		}
+		else
+		{
 			// fuzz section
 			float gain = 0.5f + 39.5f * m_pGain->get();
 			sigL *= gain;
@@ -787,16 +827,12 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 				m_OscillatorR.setResetState(false);
 			}
 
-			m_pLeftDecipBuffer[i] = sigL;
-			m_pRightDeciBuffer[i] = sigR;
+			sigL = m_OscillatorL.process();
+			sigR = m_OscillatorR.process();
 		}
 		
-		float outL, outR;
-		// decimate them
-		m_Decimator.decimateSamples(m_pLeftDecipBuffer, m_pRightDeciBuffer, outL, outR);
-
-        *outputL++ = m_FilterL.process(outL) * m_pOutputVolume->get();
-        *outputR++ = m_FilterL.process(outR) * m_pOutputVolume->get();
+        *outputL++ = m_FilterL.process(sigL) * m_pOutputVolume->get();
+        *outputR++ = m_FilterR.process(sigR) * m_pOutputVolume->get();
     }
 }
 
@@ -823,6 +859,49 @@ void CrashSyncAudioProcessor::setStateInformation (const void* data, int sizeInB
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+void CrashSyncAudioProcessor::processSubrate()
+{
+	// subrate
+	if(m_pOversample->get() == 1)
+	{
+		const int32_t sampleratex4 = getSampleRate() * m_nOversamplingRatio;
+		m_OscillatorL.setSamplerate(sampleratex4);
+		m_OscillatorR.setSamplerate(sampleratex4);
+		m_EnvelopeFollowerL.setSamplerate(sampleratex4);
+		m_EnvelopeFollowerR.setSamplerate(sampleratex4);
+		m_FilterL.setSamplerate(sampleratex4);
+		m_FilterR.setSamplerate(sampleratex4);
+	}
+	else
+	{
+		const int32_t samplerate = getSampleRate();
+		m_OscillatorL.setSamplerate(samplerate);
+		m_OscillatorR.setSamplerate(samplerate);
+		m_EnvelopeFollowerL.setSamplerate(samplerate);
+		m_EnvelopeFollowerR.setSamplerate(samplerate);
+		m_FilterL.setSamplerate(samplerate);
+		m_FilterR.setSamplerate(samplerate);
+	}
+
+	m_OscillatorL.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19000 + 1000);
+	m_OscillatorL.setWaveform(static_cast<int>(m_pWaveform->get() * (SCOscillator::numWaveforms - 1) + 0.5f));
+	m_OscillatorL.setApplyPolyBlep(m_pPolyBlep->get());
+	m_OscillatorL.setPulseWidth(m_pPulseWidth->get());
+	m_OscillatorR.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19000 + 1000);
+	m_OscillatorR.setWaveform(static_cast<int>(m_pWaveform->get() * (SCOscillator::numWaveforms - 1) + 0.5f));
+	m_OscillatorR.setApplyPolyBlep(m_pPolyBlep->get());
+	m_OscillatorR.setPulseWidth(m_pPulseWidth->get());
+	m_EnvelopeFollowerL.setAttackTimeMs(m_pEnvAttack->get());
+	m_EnvelopeFollowerL.setReleaseTimeMs(m_pEnvRelease->get());
+	m_EnvelopeFollowerR.setAttackTimeMs(m_pEnvAttack->get());
+	m_EnvelopeFollowerR.setReleaseTimeMs(m_pEnvRelease->get());
+
+	float cutoff = m_pTone->get() * m_pTone->get();
+	cutoff = (20.f + (19980.f * cutoff)) / getSampleRate();
+	m_FilterL.setCutoff(cutoff);
+	m_FilterR.setCutoff(cutoff);
 }
 
 //==============================================================================

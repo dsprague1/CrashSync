@@ -67,7 +67,6 @@ void CRateConvertor::init(int L, int FIRLen, float *pIRBuffer)
 	m_nReadIndexH = 0;
 	m_nWriteIndex = 0;
 	m_nCurrentL = 0;
-
 }
 
 void CRateConvertor::reset()

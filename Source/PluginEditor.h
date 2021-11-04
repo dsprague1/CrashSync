@@ -42,6 +42,7 @@ private:
     std::unique_ptr<SCParameterSlider> m_pPulseWidthSlider;
     std::unique_ptr<SCParameterSlider> m_pOutputVolumeSlider;
     std::unique_ptr<SCParameterSlider> m_pToneSlider;
+    std::unique_ptr<SCParameterSlider> m_pOversample;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrashSyncAudioProcessorEditor)
 };

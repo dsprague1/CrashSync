@@ -20,6 +20,8 @@ m_nPwPhase(0),
 m_fFrequency(440)
 {
 	m_pOutputSmoother.reset(new SCSmoothingFilter());
+	m_pOutputSmoother->setSamplerate(m_nSamplerate);
+	m_pOutputSmoother->setCoeffDbPerSec(40);
 }
 
 SCOscillator::~SCOscillator() 
@@ -32,6 +34,7 @@ void SCOscillator::setSamplerate(int samplerate)
 	m_nSamplerate = samplerate;  
 	setFrequency(m_fFrequency);  
 	m_pOutputSmoother->setSamplerate(samplerate);
+	m_pOutputSmoother->setCoeffDbPerSec(40);
 }
 
 void SCOscillator::setFrequency(float frequency)
