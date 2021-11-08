@@ -21,7 +21,9 @@ m_nPwPhase(0),
 m_fFrequency(440),
 m_fAverage(0),
 m_fNoiseAverage(0),
-m_fNumAverageSamples(1)
+m_fNumAverageSamples(1),
+m_fFallingSquareDiff(0),
+m_fFallingSquareState(0)
 {
 	m_pOutputSmoother.reset(new SCSmoothingFilter());
 	m_pOutputSmoother->setSamplerate(m_nSamplerate);
@@ -50,8 +52,8 @@ void SCOscillator::setFrequency(float frequency)
 	m_fFrequency = frequency; 
 	m_nIncrement = static_cast<int32_t>(frequency / static_cast<float>(m_nSamplerate) * static_cast<float>(0xFFFFFFFF));
 
-	//if(m_nWaveform == kWaveformFallingSquare)
-	//	m_pOscSmoother->setCoeffDbPerSec(200.f - ((20000.f - m_fFrequency)/20000.f) * 100);
+	float samplesPerCycle = (static_cast<float>(m_nSamplerate) / frequency) / 2.f;
+	m_fFallingSquareDiff = 0.5f * (1.f / samplesPerCycle);
 
 #if USE_PW
 	cookPulseWidth();
@@ -61,8 +63,9 @@ void SCOscillator::setFrequency(float frequency)
 void SCOscillator::setWaveform(int wave)
 { 
 	m_nWaveform = wave; 
-	//if(m_nWaveform == kWaveformFallingSquare)
-	//	m_pOscSmoother->setCoeffDbPerSec(120.f - ((20000.f - m_fFrequency) / 20000.f) * 110);
+
+	float samplesPerCycle = (static_cast<float>(m_nSamplerate) / m_fFrequency) / 2.f;
+	m_fFallingSquareDiff = 0.5f * (1.f / samplesPerCycle);
 }
 
 void SCOscillator::reset(bool state)
@@ -156,9 +159,28 @@ inline float SCOscillator::cookWaveform(float value)
 		}
 		case kWaveformFallingSquare:
 		{
-			//float squareState = (value > 0) ? 1.f : -1.f;
-			//float input = ((m_pOscSmoother->getCurrentValue() < 0) != (squareState < 0)) ? squareState : 0.75f;//parameterize goal value?
-			//return m_pOscSmoother->process(input);
+			float square = (value > 0) ? 1.f : -1.f;
+			if(square * m_fFallingSquareState < 0)
+			{
+				m_fFallingSquareState = square;
+			}
+
+			m_fFallingSquareState = (square > 0) ? m_fFallingSquareState - m_fFallingSquareDiff : m_fFallingSquareState + m_fFallingSquareDiff;
+			return m_fFallingSquareState;
+			break;
+		}
+		case kWaveformNoise:
+		{
+			float noise = static_cast<float>(rand()) / RAND_MAX;
+			return noise * 2.f - 1.f;
+			break;
+		}
+		case kWaveformFilteredNoise:
+		{
+			float noise = static_cast<float>(rand()) / RAND_MAX;
+			m_fNoiseAverage -= m_fNoiseAverage / m_fNumAverageSamples;
+			m_fNoiseAverage += (noise * 2.f - 1.f) / m_fNumAverageSamples;
+			return m_fNoiseAverage;
 			break;
 		}
 		default:

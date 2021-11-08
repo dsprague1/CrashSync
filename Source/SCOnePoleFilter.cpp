@@ -40,6 +40,6 @@ void SCOnePoleFilter::setSamplerate(int samplerate)
 
 void SCOnePoleFilter::setCutoff(float frequency)
 {
-    m_fB1 = exp(-2.f * PI * frequency);
+    m_fB1 = exp(-2.f * PI * frequency / static_cast<float>(m_nSamplerate));
     m_fA0 = 1.0 - m_fB1;
 }

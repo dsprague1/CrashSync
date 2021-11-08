@@ -309,7 +309,7 @@ void CrashSyncAudioProcessor::processSubrate()
 	m_EnvelopeFollowerR.setReleaseTimeMs(m_pEnvRelease->get());
 
 	float cutoff = m_pTone->get() * m_pTone->get();
-	cutoff = (20.f + (19980.f * cutoff)) / getSampleRate();
+	cutoff = 20.f + (19980.f * cutoff);
 	m_FilterL.setCutoff(cutoff);
 	m_FilterR.setCutoff(cutoff);
 }

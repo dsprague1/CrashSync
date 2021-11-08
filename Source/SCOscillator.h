@@ -16,6 +16,7 @@ public:
 		kWaveformWigglySquare,
 		kWaveformFallingSquare,
 		kWaveformNoise,
+		kWaveformFilteredNoise,
 		numWaveforms
 	};
 
@@ -58,6 +59,9 @@ private:
 	float m_fNumAverageSamples;
 
 	float m_fNoiseAverage;
+	
+	float m_fFallingSquareDiff;
+	float m_fFallingSquareState;
 
 	std::unique_ptr<SCSmoothingFilter> m_pOutputSmoother;
 };
