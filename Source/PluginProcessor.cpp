@@ -26,7 +26,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     m_pFrequency = new juce::AudioParameterFloat("frequency", "Frequency", 0.0f, 1.0f, 0.0f);
     m_pThreshold = new juce::AudioParameterFloat("threshold", "Threshold", 0.0f, 1.0f, 0.5f);
     m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.0f);
-    m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::kWaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::kWaveformSaw);
+    m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::kWaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::kWaveformTri);
     m_pInputMode = new juce::AudioParameterInt("input_mode", "Input Mode", kInputModeNormal, kNumInputModes - 1, kInputModeNormal);
     m_pEnvAttack = new juce::AudioParameterFloat("env_attack", "Env Attack", 0.f, 1.f, 0.1);
     m_pEnvRelease = new juce::AudioParameterFloat("env_release", "Env Release", 0.f, 1.f, 0.1);
@@ -236,7 +236,7 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 			m_OscillatorL.setResetState(false);
 		}
 
-		if(sigL <= m_pThreshold->get())
+		if(sigR <= m_pThreshold->get())
 		{
 			m_OscillatorR.reset(true);
 		}
@@ -295,12 +295,12 @@ void CrashSyncAudioProcessor::processSubrate()
 	m_FilterL.setSamplerate(samplerate);
 	m_FilterR.setSamplerate(samplerate);
 	
-	m_OscillatorL.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19000 + 1000);
-	m_OscillatorL.setWaveform(static_cast<int>(m_pWaveform->get() * (SCOscillator::numWaveforms - 1) + 0.5f));
+	m_OscillatorL.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19900 + 100);
+	m_OscillatorL.setWaveform(m_pWaveform->get());
 	m_OscillatorL.setApplyPolyBlep(m_pPolyBlep->get());
 	m_OscillatorL.setPulseWidth(m_pPulseWidth->get());
-	m_OscillatorR.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19000 + 1000);
-	m_OscillatorR.setWaveform(static_cast<int>(m_pWaveform->get() * (SCOscillator::numWaveforms - 1) + 0.5f));
+	m_OscillatorR.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19900 + 100);
+	m_OscillatorR.setWaveform(m_pWaveform->get());
 	m_OscillatorR.setApplyPolyBlep(m_pPolyBlep->get());
 	m_OscillatorR.setPulseWidth(m_pPulseWidth->get());
 	m_EnvelopeFollowerL.setAttackTimeMs(m_pEnvAttack->get());

@@ -1,6 +1,7 @@
 #include <cmath>
 #include "SCOscillator.h"
 #include "SCSmoothingFilter.h"
+#include <random>
 
 #define USE_PW 0
 
@@ -17,11 +18,16 @@ m_bIsResetState(0),
 m_bPulseWidthFlag(0),
 m_fPulseWidth(0.5f),
 m_nPwPhase(0),
-m_fFrequency(440)
+m_fFrequency(440),
+m_fAverage(0),
+m_fNoiseAverage(0),
+m_fNumAverageSamples(1)
 {
 	m_pOutputSmoother.reset(new SCSmoothingFilter());
 	m_pOutputSmoother->setSamplerate(m_nSamplerate);
 	m_pOutputSmoother->setCoeffDbPerSec(40);
+
+	srand(0);
 }
 
 SCOscillator::~SCOscillator() 
@@ -34,28 +40,38 @@ void SCOscillator::setSamplerate(int samplerate)
 	m_nSamplerate = samplerate;  
 	setFrequency(m_fFrequency);  
 	m_pOutputSmoother->setSamplerate(samplerate);
-	m_pOutputSmoother->setCoeffDbPerSec(40);
+
+	// use 44100 as the base, everthing else is a ratio
+	m_fNumAverageSamples = 4.f * samplerate / 44100.f;
 }
 
 void SCOscillator::setFrequency(float frequency)
 {
 	m_fFrequency = frequency; 
-	m_nIncrement = static_cast<int32_t>(frequency / static_cast<float>(m_nSamplerate) * static_cast<float>(0x7FFFFFFF));
-	
+	m_nIncrement = static_cast<int32_t>(frequency / static_cast<float>(m_nSamplerate) * static_cast<float>(0xFFFFFFFF));
+
+	//if(m_nWaveform == kWaveformFallingSquare)
+	//	m_pOscSmoother->setCoeffDbPerSec(200.f - ((20000.f - m_fFrequency)/20000.f) * 100);
+
 #if USE_PW
 	cookPulseWidth();
 #endif
 }
 
+void SCOscillator::setWaveform(int wave)
+{ 
+	m_nWaveform = wave; 
+	//if(m_nWaveform == kWaveformFallingSquare)
+	//	m_pOscSmoother->setCoeffDbPerSec(120.f - ((20000.f - m_fFrequency) / 20000.f) * 110);
+}
+
 void SCOscillator::reset(bool state)
 {
 	m_bIsResetState = state;
-	if(state)
-	{
-		m_pOutputSmoother->setStartValue(cookWaveform(m_nPhase / static_cast<float>(0x7FFFFFFF)));
-	}
 	m_nPhase = 0;
 	m_nPwPhase = 0;
+	m_fNoiseAverage = 0;
+	m_fAverage = 0;
 }
 
 float SCOscillator::process()
@@ -78,7 +94,7 @@ float SCOscillator::process()
 		m_bPulseWidthFlag = (pwPrev > 0 && m_nPwPhase < 0) ? !m_bPulseWidthFlag : m_bPulseWidthFlag;
 		sample *= m_bPulseWidthFlag;
 #endif
-
+		m_pOutputSmoother->process(sample);
 		if(m_bIsBipolar)
 		{
 			return sample;
@@ -109,19 +125,42 @@ inline float SCOscillator::cookWaveform(float value)
 			return fabs(value) * 2.f -1.f;
 			break;
 		}
-
 		case kWaveformSaw:
 		{
 			return value;
 			break;
 		}
-
-		case kWaveformSquare:
+		case kWaveformRoundedSaw:
 		{
-			return (value > 0) ? 1.f : (value < 0) ? -1.f : 0;
+			return tanh(3.f * value);
 			break;
 		}
+		case kWaveformSquare:
+		{
+			return (value > 0) ? 1.f : -1.f;
+			break;
+		}
+		case kWaveformWigglySquare:
+		{
+			float noise = static_cast<float>(rand()) / RAND_MAX;
+			noise *= noise;
+			noise *= 0.05f;
+			m_fNoiseAverage -= m_fNoiseAverage / m_fNumAverageSamples;
+			m_fNoiseAverage += noise / m_fNumAverageSamples;
 
+			m_fAverage -= m_fAverage / m_fNumAverageSamples;
+			m_fAverage += ((value > 0) ? 1.f : -1.f) / m_fNumAverageSamples;
+			m_fAverage = (m_fAverage > 0) ? m_fAverage - m_fNoiseAverage : m_fAverage + m_fNoiseAverage;
+			return m_fAverage;
+			break;
+		}
+		case kWaveformFallingSquare:
+		{
+			//float squareState = (value > 0) ? 1.f : -1.f;
+			//float input = ((m_pOscSmoother->getCurrentValue() < 0) != (squareState < 0)) ? squareState : 0.75f;//parameterize goal value?
+			//return m_pOscSmoother->process(input);
+			break;
+		}
 		default:
 			return value;
 			break;

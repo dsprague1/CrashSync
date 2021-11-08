@@ -11,7 +11,11 @@ public:
 	{
 		kWaveformTri,
 		kWaveformSaw,
+		kWaveformRoundedSaw,
 		kWaveformSquare,
+		kWaveformWigglySquare,
+		kWaveformFallingSquare,
+		kWaveformNoise,
 		numWaveforms
 	};
 
@@ -21,7 +25,7 @@ public:
 	void setSamplerate(int samplerate);
 	void setFrequency(float frequency);
 	void setIsBipolar(bool isBipolar) { m_bIsBipolar = isBipolar; }
-	void setWaveform(int wave) { m_nWaveform = wave; }
+	void setWaveform(int wave);
 	void setApplyPolyBlep(bool applyPolyBlep) { m_bApplyPolyBlep = applyPolyBlep; }
 	void setPulseWidth(float pulseWidth) { m_fPulseWidth = pulseWidth; cookPulseWidth(); }
 
@@ -49,6 +53,11 @@ private:
 	bool m_bIsResetState;
 	bool m_bApplyPolyBlep;
 	bool m_bPulseWidthFlag;
+
+	float m_fAverage;
+	float m_fNumAverageSamples;
+
+	float m_fNoiseAverage;
 
 	std::unique_ptr<SCSmoothingFilter> m_pOutputSmoother;
 };
