@@ -8,7 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "Controls/SCParameterSlider.h"
+#include "Controls/SCTestSlider.h"
 #include "Parameter/CrashSyncParameters.h"
 
 //==============================================================================
@@ -16,18 +16,18 @@ CrashSyncAudioProcessorEditor::CrashSyncAudioProcessorEditor (CrashSyncAudioProc
     : AudioProcessorEditor (&p), m_audioProcessor(p)
 {
     juce::Array<juce::AudioProcessorParameter*> params = m_audioProcessor.getParameters();
-    m_pFrequencySlider.reset(new SCParameterSlider(params[kCrashSyncParamFrequency]));
-    m_pThresholdSlider.reset(new SCParameterSlider(params[kCrashSyncParamThreshold]));
-    m_pGainSlider.reset(new SCParameterSlider(params[kCrashSyncParamGain]));
-    m_pWaveformSlider.reset(new SCParameterSlider(params[kCrashSyncParamWaveform]));
-    m_pInputMode.reset(new SCParameterSlider(params[kCrashSyncParamInputMode]));
-    m_pAttackSlider.reset(new SCParameterSlider(params[kCrashSyncParamAttack]));
-    m_pReleaseSlider.reset(new SCParameterSlider(params[kCrashSyncParamRelease]));
-    m_pPolyBlepSlider.reset(new SCParameterSlider(params[kCrashSyncParamPolyBlep]));
-    m_pPulseWidthSlider.reset(new SCParameterSlider(params[kCrashSyncParamPulseWidth]));
-    m_pOutputVolumeSlider.reset(new SCParameterSlider(params[kCrashSyncParamOutputVolume]));
-    m_pToneSlider.reset(new SCParameterSlider(params[kCrashSyncParamTone]));
-    m_pOversample.reset(new SCParameterSlider(params[kCrashSyncParamOversample]));
+    m_pFrequencySlider.reset(new SCTestSlider(params[kCrashSyncParamFrequency]));
+    m_pThresholdSlider.reset(new SCTestSlider(params[kCrashSyncParamThreshold]));
+    m_pGainSlider.reset(new SCTestSlider(params[kCrashSyncParamGain]));
+    m_pWaveformSlider.reset(new SCTestSlider(params[kCrashSyncParamWaveform]));
+    m_pInputMode.reset(new SCTestSlider(params[kCrashSyncParamInputMode]));
+    m_pAttackSlider.reset(new SCTestSlider(params[kCrashSyncParamAttack]));
+    m_pReleaseSlider.reset(new SCTestSlider(params[kCrashSyncParamRelease]));
+    m_pPolyBlepSlider.reset(new SCTestSlider(params[kCrashSyncParamPolyBlep]));
+    m_pPulseWidthSlider.reset(new SCTestSlider(params[kCrashSyncParamPulseWidth]));
+    m_pOutputVolumeSlider.reset(new SCTestSlider(params[kCrashSyncParamOutputVolume]));
+    m_pToneSlider.reset(new SCTestSlider(params[kCrashSyncParamTone]));
+    m_pOversample.reset(new SCTestSlider(params[kCrashSyncParamOversample]));
 
     addAndMakeVisible(m_pFrequencySlider.get());
     addAndMakeVisible(m_pThresholdSlider.get());
@@ -59,16 +59,16 @@ void CrashSyncAudioProcessorEditor::resized()
 {
     juce::Rectangle<int> bounds = getLocalBounds();
 
-    m_pFrequencySlider->setBounds(10, 10, 200, 15);
-    m_pThresholdSlider->setBounds(10, 30, 200, 15);
-    m_pGainSlider->setBounds(10, 50, 200, 15);
-    m_pWaveformSlider->setBounds(10, 70, 200, 15);
-    m_pInputMode->setBounds(10, 90, 200, 15);
-    m_pAttackSlider->setBounds(10, 110, 200, 15);
-    m_pReleaseSlider->setBounds(10, 130, 200, 15);
-    m_pPolyBlepSlider->setBounds(10, 150, 200, 15);
-    m_pPulseWidthSlider->setBounds(10, 170, 200, 15);
-    m_pOutputVolumeSlider->setBounds(10, 190, 200, 15);
-    m_pToneSlider->setBounds(10, 210, 200, 15);
-    m_pOversample->setBounds(10, 230, 200, 15);
+    m_pFrequencySlider->setBounds(10, 10, 300, 15);
+    m_pThresholdSlider->setBounds(10, 30, 300, 15);
+    m_pGainSlider->setBounds(10, 50, 300, 15);
+    m_pWaveformSlider->setBounds(10, 70, 300, 15);
+    m_pInputMode->setBounds(10, 90, 300, 15);
+    m_pAttackSlider->setBounds(10, 110, 300, 15);
+    m_pReleaseSlider->setBounds(10, 130, 300, 15);
+    m_pPolyBlepSlider->setBounds(10, 150, 300, 15);
+    m_pPulseWidthSlider->setBounds(10, 170, 300, 15);
+    m_pOutputVolumeSlider->setBounds(10, 190, 300, 15);
+    m_pToneSlider->setBounds(10, 210, 300, 15);
+    m_pOversample->setBounds(10, 230, 300, 15);
 }

@@ -17,6 +17,8 @@ m_bIsDragging(false)
     setRange(0.0, 1.0);
     setDoubleClickReturnValue(true, 0);
     setScrollWheelEnabled(false);
+
+    setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 0, 0);
 }
 
 SCParameterSlider::SCParameterSlider(juce::AudioProcessorParameter * parameter):
@@ -28,6 +30,8 @@ m_bIsDragging(false)
     setScrollWheelEnabled(false);
 
     setValue(getParameter()->getValue(), juce::dontSendNotification);
+
+    setTextBoxStyle(Slider::TextEntryBoxPosition::NoTextBox, true, 0, 0);
 }
 
 void SCParameterSlider::controlValueChanged()

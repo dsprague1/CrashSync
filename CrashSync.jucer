@@ -11,6 +11,9 @@
               file="Source/Controls/SCParameterSlider.cpp"/>
         <FILE id="Do1kbd" name="SCParameterSlider.h" compile="0" resource="0"
               file="Source/Controls/SCParameterSlider.h"/>
+        <FILE id="u36V2m" name="SCTestSlider.cpp" compile="1" resource="0"
+              file="Source/Controls/SCTestSlider.cpp"/>
+        <FILE id="dG98bo" name="SCTestSlider.h" compile="0" resource="0" file="Source/Controls/SCTestSlider.h"/>
       </GROUP>
       <GROUP id="{A2178890-B1E1-C7FB-2693-8D5CD5A1D173}" name="Parameter">
         <FILE id="T4D0Gy" name="CrashSyncParameters.h" compile="0" resource="0"
