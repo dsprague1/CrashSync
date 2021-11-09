@@ -23,7 +23,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
                        )
 #endif
 {
-    m_pFrequency = new juce::AudioParameterFloat("frequency", "Frequency", 0.0f, 1.0f, 0.0f);
+    m_pFrequency = new juce::AudioParameterFloat("osc_frequency", "Osc Freq", 0.0f, 1.0f, 0.0f);
     m_pThreshold = new juce::AudioParameterFloat("threshold", "Threshold", 0.0f, 1.0f, 0.5f);
     m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.0f);
     m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::kWaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::kWaveformTri);
@@ -32,7 +32,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     m_pEnvRelease = new juce::AudioParameterFloat("env_release", "Env Release", 0.f, 1.f, 0.1);
     m_pPolyBlep = new juce::AudioParameterInt("polyblep", "PolyBLEP", 0.f, 1.f, 0);
     m_pPulseWidth = new juce::AudioParameterFloat("pulse_width", "Pulse Width", 0.f, 1.f, 0.5);
-    m_pOutputVolume = new juce::AudioParameterFloat("output_volume", "Output Volume", 0.f, 1.f, 0.8);
+    m_pOutputVolume = new juce::AudioParameterFloat("output_volume", "Output Lvl", 0.f, 1.f, 0.8);
     m_pTone = new juce::AudioParameterFloat("tone", "Tone", 0.f, 1.f, 0.8);
 	m_pOversample = new juce::AudioParameterInt("oversample", "Oversample", 0.f, 1.f, 0.0);
 
