@@ -26,6 +26,8 @@
             file="Source/PluginProcessor.cpp"/>
       <FILE id="HTjJXc" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
+      <FILE id="zvwWEW" name="SCBiquadFilter.h" compile="0" resource="0"
+            file="Source/SCBiquadFilter.h"/>
       <FILE id="IzT3cD" name="SCEnvelopeFollower.cpp" compile="1" resource="0"
             file="Source/SCEnvelopeFollower.cpp"/>
       <FILE id="K9oT42" name="SCEnvelopeFollower.h" compile="0" resource="0"
@@ -54,6 +56,11 @@
     <FILE id="YNivrY" name="RateConvertor.cpp" compile="1" resource="0"
           file="Source/RateConvertor.cpp"/>
     <FILE id="MvoOab" name="RateConvertor.h" compile="0" resource="0" file="Source/RateConvertor.h"/>
+    <FILE id="Cra0Xu" name="SCBiquadFilterCoeff.h" compile="0" resource="0"
+          file="Source/SCBiquadFilterCoeff.h"/>
+    <FILE id="IYIuBk" name="SCBiquadFilterUtil.h" compile="0" resource="0"
+          file="Source/SCBiquadFilterUtil.h"/>
+    <FILE id="QTRoje" name="SCMath.h" compile="0" resource="0" file="Source/SCMath.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>

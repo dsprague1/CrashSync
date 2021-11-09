@@ -27,7 +27,7 @@ void SCSmoothingFilter::reset()
 float SCSmoothingFilter::process(float input)
 {
     // y = coeff * x[t] + (1 - coeff) * y[t - 1]
-    m_fZ1 = (m_fZ1 < 0) ? m_fZ1 + m_fCoeff * (input + m_fZ1) : m_fZ1 + m_fCoeff * (input - m_fZ1);
+    m_fZ1 = /*(m_fZ1 < 0) ? m_fZ1 + m_fCoeff * (input + m_fZ1) :*/ m_fZ1 + m_fCoeff * (input - m_fZ1);
     return m_fZ1;
 }
 

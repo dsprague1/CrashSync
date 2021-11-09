@@ -10,9 +10,7 @@
 
 #include "SCWavetableOsc.h"
 #include <cstring>
-#include <cmath>
-
-#define HALF_PI 1.57079632679489661923
+#include "SCMath.h"
 
 SCWavetableOsc::SCWavetableOsc():
 m_nTableLength(1024),

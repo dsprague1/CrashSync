@@ -9,9 +9,7 @@
 */
 
 #include "SCOnePoleFilter.h"
-#include <cmath>
-
-#define PI 3.14159265358979323846
+#include "SCMath.h"
 
 SCOnePoleFilter::SCOnePoleFilter():
 m_nSamplerate(44100),

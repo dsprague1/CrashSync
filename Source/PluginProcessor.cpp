@@ -8,7 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-
+#include "SCBiquadFilterUtil.h"
 
 //==============================================================================
 CrashSyncAudioProcessor::CrashSyncAudioProcessor()
@@ -23,7 +23,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
                        )
 #endif
 {
-    m_pFrequency = new juce::AudioParameterFloat("osc_frequency", "Osc Freq", 0.0f, 1.0f, 0.0f);
+    m_pFrequency = new juce::AudioParameterFloat("osc_frequency", "Osc Freq", 0.f, 1.f, 0.1f);
     m_pThreshold = new juce::AudioParameterFloat("threshold", "Threshold", 0.0f, 1.0f, 0.5f);
     m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.0f);
     m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::kWaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::kWaveformTri);
@@ -35,6 +35,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     m_pOutputVolume = new juce::AudioParameterFloat("output_volume", "Output Lvl", 0.f, 1.f, 0.8);
     m_pTone = new juce::AudioParameterFloat("tone", "Tone", 0.f, 1.f, 0.8);
 	m_pOversample = new juce::AudioParameterInt("oversample", "Oversample", 0.f, 1.f, 0.0);
+	m_pInputFilterCutoff = new juce::AudioParameterFloat("input_filter", "Input Filter", 0.f, 1.f, 0.1f);
 
     addParameter(m_pFrequency);
     addParameter(m_pThreshold);
@@ -48,6 +49,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     addParameter(m_pOutputVolume);
     addParameter(m_pTone);
 	addParameter(m_pOversample);
+	addParameter(m_pInputFilterCutoff);
 
 	m_pOversampler.reset(new juce::dsp::Oversampling<float>(getNumInputChannels(), 2, juce::dsp::Oversampling<float>::filterHalfBandFIREquiripple, false));
 }
@@ -131,6 +133,8 @@ void CrashSyncAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
 	m_FilterL.reset();
 	m_FilterR.setSamplerate(sampleRate);
 	m_FilterR.reset();
+	m_InputFilterL.reset();
+	m_InputFilterR.reset();
 
 	juce::dsp::ProcessSpec spec;
 	spec.sampleRate = sampleRate;
@@ -209,6 +213,9 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
     {
 		float sigL = *(inputL + i);
 		float sigR = *(inputR + i);
+
+		sigL = m_InputFilterL.process(sigL);
+		sigR = m_InputFilterR.process(sigR);
 
 		// fuzz section
 		float gain = 0.5f + 39.5f * m_pGain->get();
@@ -312,6 +319,11 @@ void CrashSyncAudioProcessor::processSubrate()
 	cutoff = 20.f + (19980.f * cutoff);
 	m_FilterL.setCutoff(cutoff);
 	m_FilterR.setCutoff(cutoff);
+
+	float inputCutoff = m_pInputFilterCutoff->get() * m_pInputFilterCutoff->get();
+	inputCutoff = 20.f + (19980.f * inputCutoff);
+	m_InputFilterL.setCoeffsForBand(GenerateSecondOrderLpfCoeffs(inputCutoff, 3.f, samplerate), 0);
+	m_InputFilterR.setCoeffsForBand(GenerateSecondOrderLpfCoeffs(inputCutoff, 3.f, samplerate), 0);
 }
 
 //==============================================================================

@@ -70,6 +70,8 @@ void SCOscillator::setWaveform(int wave)
 
 void SCOscillator::reset(bool state)
 {
+	m_pOutputSmoother->reset();
+
 	m_bIsResetState = state;
 	m_nPhase = 0;
 	m_nPwPhase = 0;

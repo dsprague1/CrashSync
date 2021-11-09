@@ -12,8 +12,8 @@
 #include "SCOscillator.h"
 #include "SCEnvelopeFollower.h"
 #include "SCOnePoleFilter.h"
-#include "Decimator.h"
-#include "Interpolator.h"
+#include "SCBiquadFilter.h"
+#include "SCBiquadFilterCoeff.h"
 
 //==============================================================================
 /**
@@ -77,7 +77,9 @@ private:
     juce::AudioParameterFloat * m_pEnvRelease;
     juce::AudioParameterFloat * m_pPulseWidth;
     juce::AudioParameterFloat * m_pOutputVolume;
-    juce::AudioParameterFloat * m_pTone;
+    juce::AudioParameterFloat * m_pTone;    
+    juce::AudioParameterFloat * m_pInputFilterCutoff;
+
     juce::AudioParameterInt * m_pWaveform;
     juce::AudioParameterInt * m_pInputMode;
     juce::AudioParameterInt * m_pPolyBlep;
@@ -89,6 +91,8 @@ private:
     SCEnvelopeFollower m_EnvelopeFollowerR;
     SCOnePoleFilter m_FilterL;
     SCOnePoleFilter m_FilterR;
+    SCMultibandBiquadFilter<1> m_InputFilterL;
+    SCMultibandBiquadFilter<1> m_InputFilterR;
 
     std::unique_ptr<juce::dsp::Oversampling<float>> m_pOversampler;
 
