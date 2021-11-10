@@ -120,6 +120,23 @@ void SCOscillator::cookPulseWidth()
 	m_nPwRightInc = m_nIncrement * pwRatioRight;//(m_nIncrement * 2) - m_nPwLeftInc; // static_cast<int32_t>((m_fFrequency * pwRatioRight) / static_cast<float>(m_nSamplerate) * static_cast<float>(0x7FFFFFFF));
 }
 
+inline float SCOscillator::generateSaw(float value)
+{
+	return (m_bApplyPolyBlep) ? applyPolyBlep(value) : value;
+}
+
+inline float SCOscillator::generateSquare(float value)
+{
+	// use two saws (one out of phase) to generate the square
+
+	float followerPhase = value + 1.f;
+	followerPhase = (followerPhase > 1.f) ? followerPhase - 2.f : followerPhase;
+	
+	float leader = generateSaw(value);
+	float follower = generateSaw(followerPhase);
+	return leader - follower;
+}
+
 // expects -1 to 1
 inline float SCOscillator::cookWaveform(float value)
 {
@@ -127,22 +144,22 @@ inline float SCOscillator::cookWaveform(float value)
 	{
 		case kWaveformTri:
 		{
-			return fabs(value) * 2.f -1.f;
+			return fabs(generateSaw(value)) * 2.f -1.f;
 			break;
 		}
 		case kWaveformSaw:
 		{
-			return value;
+			generateSaw(value);
 			break;
 		}
 		case kWaveformRoundedSaw:
 		{
-			return tanh(3.f * value);
+			return tanh(3.f * generateSaw(value));
 			break;
 		}
 		case kWaveformSquare:
 		{
-			return (value > 0) ? 1.f : -1.f;
+			return generateSquare(value);
 			break;
 		}
 		case kWaveformWigglySquare:
@@ -154,14 +171,14 @@ inline float SCOscillator::cookWaveform(float value)
 			m_fNoiseAverage += noise / m_fNumAverageSamples;
 
 			m_fAverage -= m_fAverage / m_fNumAverageSamples;
-			m_fAverage += ((value > 0) ? 1.f : -1.f) / m_fNumAverageSamples;
+			m_fAverage += (generateSquare(value)) / m_fNumAverageSamples;
 			m_fAverage = (m_fAverage > 0) ? m_fAverage - m_fNoiseAverage : m_fAverage + m_fNoiseAverage;
 			return m_fAverage;
 			break;
 		}
 		case kWaveformFallingSquare:
 		{
-			float square = (value > 0) ? 1.f : -1.f;
+			float square = generateSquare(value);
 			if(square * m_fFallingSquareState < 0)
 			{
 				m_fFallingSquareState = square;

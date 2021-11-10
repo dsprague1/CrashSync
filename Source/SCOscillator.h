@@ -38,6 +38,8 @@ public:
 
 private:
 	void cookPulseWidth();
+	inline float generateSaw(float value);
+	inline float generateSquare(float value);
 	inline float cookWaveform(float value);
 	inline float applyPolyBlep(float value);
 

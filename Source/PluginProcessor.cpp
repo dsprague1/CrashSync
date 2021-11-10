@@ -264,8 +264,8 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 		sigL = sigL * m_pMix->get() + dryL * (1.f - m_pMix->get());
 		sigR = sigR * m_pMix->get() + dryR * (1.f - m_pMix->get());
 
-		*(outputL + i) = sigR * m_pOutputVolume->get();
-		*(outputR + i) = sigL * m_pOutputVolume->get();
+		*(outputL + i) = sigL * m_pOutputVolume->get();
+		*(outputR + i) = sigR * m_pOutputVolume->get();
     }
 
 	if(m_pOversample->get())
