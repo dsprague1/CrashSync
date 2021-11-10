@@ -79,6 +79,7 @@ private:
     juce::AudioParameterFloat * m_pOutputVolume;
     juce::AudioParameterFloat * m_pTone;    
     juce::AudioParameterFloat * m_pInputFilterCutoff;
+    juce::AudioParameterFloat * m_pMix;
 
     juce::AudioParameterInt * m_pWaveform;
     juce::AudioParameterInt * m_pInputMode;

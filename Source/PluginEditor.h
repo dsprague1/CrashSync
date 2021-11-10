@@ -44,6 +44,7 @@ private:
     std::unique_ptr<SCTestSlider> m_pToneSlider;
     std::unique_ptr<SCTestSlider> m_pOversample;
     std::unique_ptr<SCTestSlider> m_pInputCutoff;
+    std::unique_ptr<SCTestSlider> m_pMix;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrashSyncAudioProcessorEditor)
 };

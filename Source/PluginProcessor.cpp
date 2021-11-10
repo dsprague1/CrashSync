@@ -25,7 +25,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
 {
     m_pFrequency = new juce::AudioParameterFloat("osc_frequency", "Osc Freq", 0.f, 1.f, 0.1f);
     m_pThreshold = new juce::AudioParameterFloat("threshold", "Threshold", 0.0f, 1.0f, 0.5f);
-    m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.0f);
+    m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.3f);
     m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::kWaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::kWaveformTri);
     m_pInputMode = new juce::AudioParameterInt("input_mode", "Input Mode", kInputModeNormal, kNumInputModes - 1, kInputModeNormal);
     m_pEnvAttack = new juce::AudioParameterFloat("env_attack", "Env Attack", 0.f, 1.f, 0.1);
@@ -36,6 +36,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     m_pTone = new juce::AudioParameterFloat("tone", "Tone", 0.f, 1.f, 0.8);
 	m_pOversample = new juce::AudioParameterInt("oversample", "Oversample", 0.f, 1.f, 0.0);
 	m_pInputFilterCutoff = new juce::AudioParameterFloat("input_filter", "Input Filter", 0.f, 1.f, 0.1f);
+	m_pMix = new juce::AudioParameterFloat("mix", "Mix", 0.f, 1.f, 1.f);
 
     addParameter(m_pFrequency);
     addParameter(m_pThreshold);
@@ -50,6 +51,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     addParameter(m_pTone);
 	addParameter(m_pOversample);
 	addParameter(m_pInputFilterCutoff);
+	addParameter(m_pMix);
 
 	m_pOversampler.reset(new juce::dsp::Oversampling<float>(getNumInputChannels(), 2, juce::dsp::Oversampling<float>::filterHalfBandFIREquiripple, false));
 }
@@ -211,11 +213,11 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 
     for(int i = 0; i < numSamples; i++)
     {
-		float sigL = *(inputL + i);
-		float sigR = *(inputR + i);
+		float dryL = *(inputL + i);
+		float dryR = *(inputR + i);
 
-		sigL = m_InputFilterL.process(sigL);
-		sigR = m_InputFilterR.process(sigR);
+		float sigL = m_InputFilterL.process(dryL);
+		float sigR = m_InputFilterR.process(dryR);
 
 		// fuzz section
 		float gain = 0.5f + 39.5f * m_pGain->get();
@@ -255,8 +257,15 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 		sigL = m_OscillatorL.process();
 		sigR = m_OscillatorR.process();
 		
-		*(outputL + i) = m_FilterL.process(sigL) * m_pOutputVolume->get();
-		*(outputR + i) = m_FilterR.process(sigR) * m_pOutputVolume->get();
+		sigL = m_FilterL.process(sigL);
+		sigR = m_FilterR.process(sigR);
+
+		// just do linear mix for now
+		sigL = sigL * m_pMix->get() + dryL * (1.f - m_pMix->get());
+		sigR = sigR * m_pMix->get() + dryR * (1.f - m_pMix->get());
+
+		*(outputL + i) = sigR * m_pOutputVolume->get();
+		*(outputR + i) = sigL * m_pOutputVolume->get();
     }
 
 	if(m_pOversample->get())
