@@ -28,6 +28,7 @@ CrashSyncAudioProcessorEditor::CrashSyncAudioProcessorEditor (CrashSyncAudioProc
     m_pOutputVolumeSlider.reset(new SCTestSlider(params[kCrashSyncParamOutputVolume]));
     m_pToneSlider.reset(new SCTestSlider(params[kCrashSyncParamTone]));
     m_pOversample.reset(new SCTestSlider(params[kCrashSyncParamOversample]));
+    m_pInputCutoff.reset(new SCTestSlider(params[kCrashSyncParamInputFilter]));
 
     addAndMakeVisible(m_pFrequencySlider.get());
     addAndMakeVisible(m_pThresholdSlider.get());
@@ -41,6 +42,7 @@ CrashSyncAudioProcessorEditor::CrashSyncAudioProcessorEditor (CrashSyncAudioProc
     addAndMakeVisible(m_pOutputVolumeSlider.get());
     addAndMakeVisible(m_pToneSlider.get());
     addAndMakeVisible(m_pOversample.get());
+    addAndMakeVisible(m_pInputCutoff.get());
 
     setSize (400, 300);
 }
@@ -71,4 +73,5 @@ void CrashSyncAudioProcessorEditor::resized()
     m_pOutputVolumeSlider->setBounds(10, 190, 300, 15);
     m_pToneSlider->setBounds(10, 210, 300, 15);
     m_pOversample->setBounds(10, 230, 300, 15);
+    m_pInputCutoff->setBounds(10, 250, 300, 15);
 }

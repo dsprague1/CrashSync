@@ -17,7 +17,7 @@ class SCMultibandBiquadFilter
 public:
     SCMultibandBiquadFilter()
     {
-        m_pZ = new float[numBands * 4];
+        m_pZ = new float[numBands * 2 + 2];
         reset();
     }
 
@@ -57,7 +57,7 @@ public:
 
     void reset()
     {
-        std::memset(m_pZ, 0, numBands * 2 + 2);
+        std::memset(m_pZ, 0, (numBands * 2 + 2) * sizeof(float));
     }
 
 private:

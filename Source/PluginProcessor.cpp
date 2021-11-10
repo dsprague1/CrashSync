@@ -322,7 +322,9 @@ void CrashSyncAudioProcessor::processSubrate()
 
 	float inputCutoff = m_pInputFilterCutoff->get() * m_pInputFilterCutoff->get();
 	inputCutoff = 20.f + (19980.f * inputCutoff);
-	m_InputFilterL.setCoeffsForBand(GenerateSecondOrderLpfCoeffs(inputCutoff, 3.f, samplerate), 0);
+
+	// fixed reso variable fc
+	m_InputFilterL.setCoeffsForBand(GenerateSecondOrderLpfCoeffs(inputCutoff, 3.f, samplerate), 0); 
 	m_InputFilterR.setCoeffsForBand(GenerateSecondOrderLpfCoeffs(inputCutoff, 3.f, samplerate), 0);
 }
 

@@ -24,5 +24,6 @@ enum
     kCrashSyncParamOutputVolume,
     kCrashSyncParamTone,
     kCrashSyncParamOversample,
+    kCrashSyncParamInputFilter,
     kNumCrashSyncParams
 };
