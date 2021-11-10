@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="CGhKkh" name="CrashSync" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              version="0.1" companyName="Sleepy Cat" companyEmail="sleepycatplugins@gmail.com"
+              pluginManufacturerCode="SCAT" pluginCode="CRSH">
   <MAINGROUP id="g0GhhB" name="CrashSync">
     <GROUP id="{9DAD1CCB-1C0C-EB0B-E85F-97E2988C46D2}" name="Libraries"/>
     <GROUP id="{37164EE1-0BC6-D505-7952-5CF5EE7C0DF6}" name="Source">
