@@ -70,8 +70,8 @@ void CrashSyncAudioProcessorEditor::resized()
     m_pInputMode->setBounds(10, 90, 300, 15);
     m_pAttackSlider->setBounds(10, 110, 300, 15);
     m_pReleaseSlider->setBounds(10, 130, 300, 15);
-    m_pPolyBlepSlider->setBounds(10, 150, 300, 15);
-    m_pPulseWidthSlider->setBounds(10, 170, 300, 15);
+    //m_pPolyBlepSlider->setBounds(10, 150, 300, 15);
+    //m_pPulseWidthSlider->setBounds(10, 170, 300, 15);
     m_pOutputVolumeSlider->setBounds(10, 190, 300, 15);
     m_pToneSlider->setBounds(10, 210, 300, 15);
     m_pOversample->setBounds(10, 230, 300, 15);

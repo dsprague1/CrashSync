@@ -311,11 +311,11 @@ void CrashSyncAudioProcessor::processSubrate()
 	m_FilterL.setSamplerate(samplerate);
 	m_FilterR.setSamplerate(samplerate);
 	
-	m_OscillatorL.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19900 + 100);
+	m_OscillatorL.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 9900 + 100);
 	m_OscillatorL.setWaveform(m_pWaveform->get());
 	m_OscillatorL.setApplyPolyBlep(m_pPolyBlep->get());
 	m_OscillatorL.setPulseWidth(m_pPulseWidth->get());
-	m_OscillatorR.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 19900 + 100);
+	m_OscillatorR.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 9900 + 100);
 	m_OscillatorR.setWaveform(m_pWaveform->get());
 	m_OscillatorR.setApplyPolyBlep(m_pPolyBlep->get());
 	m_OscillatorR.setPulseWidth(m_pPulseWidth->get());
