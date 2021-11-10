@@ -122,7 +122,7 @@ void SCOscillator::cookPulseWidth()
 
 inline float SCOscillator::generateSaw(float value)
 {
-	return (m_bApplyPolyBlep) ? applyPolyBlep(value) : value;
+	return /*(m_bApplyPolyBlep) ? applyPolyBlep(value) :*/ value;
 }
 
 inline float SCOscillator::generateSquare(float value)
@@ -216,21 +216,23 @@ inline float SCOscillator::applyPolyBlep(float value)
 	int32_t next = m_nPhase + m_nIncrement;
 
 	// check if before or after continuity, and calculate the residual based on that
-	if(m_nPhase > 0 && next < 0) // before discontinuity?
+	if(m_nPhase > (0x7FFFFFFF - m_nIncrement)) // before discontinuity?
 	{
 		float t = static_cast<float>(m_nPhase - 0x7FFFFFFF) / m_nIncrement;
-		correction = t * t + 2.f * t + 1.f;
+		correction = 0.5f * t * t + t + 0.5f;
+		correction *= -2.f;
 	}
-	else if(m_nPhase < 0 && previous > 0)
+	else if(m_nPhase < (static_cast<int32_t>(0xFFFFFFFF) + m_nIncrement))
 	{
 		float t = static_cast<float>(m_nPhase + 0x7FFFFFFF) / m_nIncrement;
-		correction = 2.f * t - t * t - 1.f;
+		correction = -0.5f * t * t + t - 0.5f;
+		correction *= -2.f;
 	}
 
 	// invert for falling edge
-	bool fallingEdge = (m_nWaveform == kWaveformSquare) ? (next < 0) : true;
-	if(fallingEdge)
-		correction *= -1.f;
+	//bool fallingEdge = (m_nWaveform == kWaveformSquare) ? (next < 0) : true;
+	//if(fallingEdge)
+	//	correction *= -1.f;
 
 	return value + correction;
 }
