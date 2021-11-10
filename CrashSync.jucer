@@ -48,14 +48,6 @@
       <FILE id="LaA2u1" name="SCWavetableOsc.h" compile="0" resource="0"
             file="Source/SCWavetableOsc.h"/>
     </GROUP>
-    <FILE id="aKritn" name="Decimator.cpp" compile="1" resource="0" file="Source/Decimator.cpp"/>
-    <FILE id="wTbtgN" name="Decimator.h" compile="0" resource="0" file="Source/Decimator.h"/>
-    <FILE id="uA8bup" name="Interpolator.cpp" compile="1" resource="0"
-          file="Source/Interpolator.cpp"/>
-    <FILE id="uaPq1w" name="Interpolator.h" compile="0" resource="0" file="Source/Interpolator.h"/>
-    <FILE id="YNivrY" name="RateConvertor.cpp" compile="1" resource="0"
-          file="Source/RateConvertor.cpp"/>
-    <FILE id="MvoOab" name="RateConvertor.h" compile="0" resource="0" file="Source/RateConvertor.h"/>
     <FILE id="Cra0Xu" name="SCBiquadFilterCoeff.h" compile="0" resource="0"
           file="Source/SCBiquadFilterCoeff.h"/>
     <FILE id="IYIuBk" name="SCBiquadFilterUtil.h" compile="0" resource="0"
