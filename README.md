@@ -1,6 +1,8 @@
 # CrashSync
 Another sound mangler
 
+Free and open source
+
 Thank you for testing this plugin for me, but PLEASE, be careful. This is very much not finished software, so please make sure to put a limiter on your master or the track this plugin is on, or to have some kind of automute set up to protect your ears.
 
 // ---------------------------
