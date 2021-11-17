@@ -26,7 +26,7 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
     m_pFrequency = new juce::AudioParameterFloat("osc_frequency", "Osc Freq", 0.f, 1.f, 0.1f);
     m_pThreshold = new juce::AudioParameterFloat("threshold", "Threshold", 0.0f, 1.0f, 0.5f);
     m_pGain = new juce::AudioParameterFloat("gain", "Gain", 0.0f, 1.0f, 0.3f);
-    m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCOscillator::kWaveformTri, SCOscillator::numWaveforms - 1, SCOscillator::kWaveformTri);
+    m_pWaveform = new juce::AudioParameterInt("waveform", "Waveform", SCDsp::SCOscillator::kWaveformTri, SCDsp::SCOscillator::numWaveforms - 1, SCDsp::SCOscillator::kWaveformTri);
     m_pInputMode = new juce::AudioParameterInt("input_mode", "Input Mode", kInputModeNormal, kNumInputModes - 1, kInputModeNormal);
     m_pEnvAttack = new juce::AudioParameterFloat("env_attack", "Env Attack", 0.f, 1.f, 0.1);
     m_pEnvRelease = new juce::AudioParameterFloat("env_release", "Env Release", 0.f, 1.f, 0.1);
@@ -333,8 +333,8 @@ void CrashSyncAudioProcessor::processSubrate()
 	inputCutoff = 20.f + (19980.f * inputCutoff);
 
 	// fixed reso variable fc
-	m_InputFilterL.setCoeffsForBand(GenerateSecondOrderLpfCoeffs(inputCutoff, 3.f, samplerate), 0); 
-	m_InputFilterR.setCoeffsForBand(GenerateSecondOrderLpfCoeffs(inputCutoff, 3.f, samplerate), 0);
+	m_InputFilterL.setCoeffsForBand(SCDsp::GenerateSecondOrderLpfCoeffs(inputCutoff, 3.f, samplerate), 0);
+	m_InputFilterR.setCoeffsForBand(SCDsp::GenerateSecondOrderLpfCoeffs(inputCutoff, 3.f, samplerate), 0);
 }
 
 //==============================================================================

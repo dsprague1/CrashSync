@@ -86,14 +86,14 @@ private:
     juce::AudioParameterInt * m_pPolyBlep;
     juce::AudioParameterInt * m_pOversample;
 
-    SCOscillator m_OscillatorL;
-    SCOscillator m_OscillatorR;
-    SCEnvelopeFollower m_EnvelopeFollowerL;
-    SCEnvelopeFollower m_EnvelopeFollowerR;
-    SCOnePoleFilter m_FilterL;
-    SCOnePoleFilter m_FilterR;
-    SCMultibandBiquadFilter<1> m_InputFilterL;
-    SCMultibandBiquadFilter<1> m_InputFilterR;
+    SCDsp::SCOscillator m_OscillatorL;
+    SCDsp::SCOscillator m_OscillatorR;
+    SCDsp::SCEnvelopeFollower m_EnvelopeFollowerL;
+    SCDsp::SCEnvelopeFollower m_EnvelopeFollowerR;
+    SCDsp::SCOnePoleFilter m_FilterL;
+    SCDsp::SCOnePoleFilter m_FilterR;
+    SCDsp::SCMultibandBiquadFilter<1> m_InputFilterL;
+    SCDsp::SCMultibandBiquadFilter<1> m_InputFilterR;
 
     std::unique_ptr<juce::dsp::Oversampling<float>> m_pOversampler;
 
