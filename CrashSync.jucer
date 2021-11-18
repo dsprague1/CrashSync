@@ -3,20 +3,10 @@
 <JUCERPROJECT id="CGhKkh" name="CrashSync" projectType="audioplug" useAppConfig="0"
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
               version="0.1" companyName="Sleepy Cat" companyEmail="sleepycatplugins@gmail.com"
-              pluginManufacturerCode="SCAT" pluginCode="CRSH" headerPath="../../Library/DspCore/Headers">
+              pluginManufacturerCode="SLCT" pluginCode="CRSH" headerPath="../../Library/DspCore/Headers&#10;../../Library/UICore/Headers">
   <MAINGROUP id="g0GhhB" name="CrashSync">
     <GROUP id="{9DAD1CCB-1C0C-EB0B-E85F-97E2988C46D2}" name="Libraries"/>
     <GROUP id="{37164EE1-0BC6-D505-7952-5CF5EE7C0DF6}" name="Source">
-      <GROUP id="{C665FF01-C664-1B01-6C8B-88C98A2305B2}" name="Controls">
-        <FILE id="YW9LnU" name="SCControlBase.h" compile="0" resource="0" file="Source/Controls/SCControlBase.h"/>
-        <FILE id="dKW7eB" name="SCParameterSlider.cpp" compile="1" resource="0"
-              file="Source/Controls/SCParameterSlider.cpp"/>
-        <FILE id="Do1kbd" name="SCParameterSlider.h" compile="0" resource="0"
-              file="Source/Controls/SCParameterSlider.h"/>
-        <FILE id="u36V2m" name="SCTestSlider.cpp" compile="1" resource="0"
-              file="Source/Controls/SCTestSlider.cpp"/>
-        <FILE id="dG98bo" name="SCTestSlider.h" compile="0" resource="0" file="Source/Controls/SCTestSlider.h"/>
-      </GROUP>
       <GROUP id="{A2178890-B1E1-C7FB-2693-8D5CD5A1D173}" name="Parameter">
         <FILE id="T4D0Gy" name="CrashSyncParameters.h" compile="0" resource="0"
               file="Source/Parameter/CrashSyncParameters.h"/>
@@ -32,7 +22,7 @@
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
-    <VS2019 targetFolder="Builds/VisualStudio2019" extraLinkerFlags="../../Library/DspCore/Builds/VisualStudio2019/x64/${BUILD_TYPE}/&quot;Static Library&quot;/SCDspCore.lib">
+    <VS2019 targetFolder="Builds/VisualStudio2019" extraLinkerFlags="../../Library/DspCore/Builds/VisualStudio2019/x64/${BUILD_TYPE}/&quot;Static Library&quot;/SCDspCore.lib&#10;../../Library/UICore/Builds/VisualStudio2019/x64/${BUILD_TYPE}/&quot;Static Library&quot;/SCUICore.lib">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="CrashSync" libraryPath="../../Library/DspCore/Builds/VisualStudio2019/x64/Debug/Static Library/SCDspCore.lib"
                        defines="BUILD_TYPE=Debug"/>

@@ -8,7 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-#include "Controls/SCTestSlider.h"
+#include "SCTestSlider.h"
 #include "Parameter/CrashSyncParameters.h"
 
 //==============================================================================
@@ -16,20 +16,20 @@ CrashSyncAudioProcessorEditor::CrashSyncAudioProcessorEditor (CrashSyncAudioProc
     : AudioProcessorEditor (&p), m_audioProcessor(p)
 {
     juce::Array<juce::AudioProcessorParameter*> params = m_audioProcessor.getParameters();
-    m_pFrequencySlider.reset(new SCTestSlider(params[kCrashSyncParamFrequency]));
-    m_pThresholdSlider.reset(new SCTestSlider(params[kCrashSyncParamThreshold]));
-    m_pGainSlider.reset(new SCTestSlider(params[kCrashSyncParamGain]));
-    m_pWaveformSlider.reset(new SCTestSlider(params[kCrashSyncParamWaveform]));
-    m_pInputMode.reset(new SCTestSlider(params[kCrashSyncParamInputMode]));
-    m_pAttackSlider.reset(new SCTestSlider(params[kCrashSyncParamAttack]));
-    m_pReleaseSlider.reset(new SCTestSlider(params[kCrashSyncParamRelease]));
-    m_pPolyBlepSlider.reset(new SCTestSlider(params[kCrashSyncParamPolyBlep]));
-    m_pPulseWidthSlider.reset(new SCTestSlider(params[kCrashSyncParamPulseWidth]));
-    m_pOutputVolumeSlider.reset(new SCTestSlider(params[kCrashSyncParamOutputVolume]));
-    m_pToneSlider.reset(new SCTestSlider(params[kCrashSyncParamTone]));
-    m_pOversample.reset(new SCTestSlider(params[kCrashSyncParamOversample]));
-    m_pInputCutoff.reset(new SCTestSlider(params[kCrashSyncParamInputFilter]));
-    m_pMix.reset(new SCTestSlider(params[kCrashSyncParamMix]));
+    m_pFrequencySlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamFrequency]));
+    m_pThresholdSlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamThreshold]));
+    m_pGainSlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamGain]));
+    m_pWaveformSlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamWaveform]));
+    m_pInputMode.reset(new SCUI::SCTestSlider(params[kCrashSyncParamInputMode]));
+    m_pAttackSlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamAttack]));
+    m_pReleaseSlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamRelease]));
+    m_pPolyBlepSlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamPolyBlep]));
+    m_pPulseWidthSlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamPulseWidth]));
+    m_pOutputVolumeSlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamOutputVolume]));
+    m_pToneSlider.reset(new SCUI::SCTestSlider(params[kCrashSyncParamTone]));
+    m_pOversample.reset(new SCUI::SCTestSlider(params[kCrashSyncParamOversample]));
+    m_pInputCutoff.reset(new SCUI::SCTestSlider(params[kCrashSyncParamInputFilter]));
+    m_pMix.reset(new SCUI::SCTestSlider(params[kCrashSyncParamMix]));
 
     addAndMakeVisible(m_pFrequencySlider.get());
     addAndMakeVisible(m_pThresholdSlider.get());

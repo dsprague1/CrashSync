@@ -14,7 +14,10 @@
 //==============================================================================
 /**
 */
-class SCTestSlider;
+namespace SCUI
+{
+    class SCTestSlider;
+}
 
 class CrashSyncAudioProcessorEditor  : public juce::AudioProcessorEditor
 {
@@ -31,20 +34,20 @@ private:
     // access the processor object that created it.
     CrashSyncAudioProcessor& m_audioProcessor;
 
-    std::unique_ptr<SCTestSlider> m_pFrequencySlider;
-    std::unique_ptr<SCTestSlider> m_pThresholdSlider;
-    std::unique_ptr<SCTestSlider> m_pGainSlider;
-    std::unique_ptr<SCTestSlider> m_pWaveformSlider;
-    std::unique_ptr<SCTestSlider> m_pInputMode;
-    std::unique_ptr<SCTestSlider> m_pAttackSlider;
-    std::unique_ptr<SCTestSlider> m_pReleaseSlider;
-    std::unique_ptr<SCTestSlider> m_pPolyBlepSlider;
-    std::unique_ptr<SCTestSlider> m_pPulseWidthSlider;
-    std::unique_ptr<SCTestSlider> m_pOutputVolumeSlider;
-    std::unique_ptr<SCTestSlider> m_pToneSlider;
-    std::unique_ptr<SCTestSlider> m_pOversample;
-    std::unique_ptr<SCTestSlider> m_pInputCutoff;
-    std::unique_ptr<SCTestSlider> m_pMix;
+    std::unique_ptr<SCUI::SCTestSlider> m_pFrequencySlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pThresholdSlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pGainSlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pWaveformSlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pInputMode;
+    std::unique_ptr<SCUI::SCTestSlider> m_pAttackSlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pReleaseSlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pPolyBlepSlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pPulseWidthSlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pOutputVolumeSlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pToneSlider;
+    std::unique_ptr<SCUI::SCTestSlider> m_pOversample;
+    std::unique_ptr<SCUI::SCTestSlider> m_pInputCutoff;
+    std::unique_ptr<SCUI::SCTestSlider> m_pMix;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrashSyncAudioProcessorEditor)
 };

@@ -1,3 +1,6 @@
 [submodule "Library/DspCore"]
 	path = Library/DspCore
 	url = https://github.com/sleepyCatDev/DspCore.git
+[submodule "Library/UICore"]
+	path = Library/UICore
+	url = https://github.com/sleepyCatDev/UICore.git
