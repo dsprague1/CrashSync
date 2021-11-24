@@ -30,6 +30,9 @@ CrashSyncAudioProcessorEditor::CrashSyncAudioProcessorEditor (CrashSyncAudioProc
     m_pOversample.reset(new SCUI::SCTestSlider(params[kCrashSyncParamOversample]));
     m_pInputCutoff.reset(new SCUI::SCTestSlider(params[kCrashSyncParamInputFilter]));
     m_pMix.reset(new SCUI::SCTestSlider(params[kCrashSyncParamMix]));
+    m_pLfoRate.reset(new SCUI::SCTestSlider(params[kCrashSyncParamLfoRate]));
+    m_pLfoDepth.reset(new SCUI::SCTestSlider(params[kCrashSyncParamLfoDepth]));
+    m_pOscPhase.reset(new SCUI::SCTestSlider(params[kCrashSyncParamOscPhase]));
 
     addAndMakeVisible(m_pFrequencySlider.get());
     addAndMakeVisible(m_pThresholdSlider.get());
@@ -45,6 +48,9 @@ CrashSyncAudioProcessorEditor::CrashSyncAudioProcessorEditor (CrashSyncAudioProc
     addAndMakeVisible(m_pOversample.get());
     addAndMakeVisible(m_pInputCutoff.get());
     addAndMakeVisible(m_pMix.get());
+    addAndMakeVisible(m_pLfoRate.get());
+    addAndMakeVisible(m_pLfoDepth.get());
+    addAndMakeVisible(m_pOscPhase.get());
 
     setSize (400, 300);
 }
@@ -70,11 +76,12 @@ void CrashSyncAudioProcessorEditor::resized()
     m_pInputMode->setBounds(10, 90, 300, 15);
     m_pAttackSlider->setBounds(10, 110, 300, 15);
     m_pReleaseSlider->setBounds(10, 130, 300, 15);
-    //m_pPolyBlepSlider->setBounds(10, 150, 300, 15);
-    //m_pPulseWidthSlider->setBounds(10, 170, 300, 15);
-    m_pOutputVolumeSlider->setBounds(10, 190, 300, 15);
-    m_pToneSlider->setBounds(10, 210, 300, 15);
-    m_pOversample->setBounds(10, 230, 300, 15);
-    m_pInputCutoff->setBounds(10, 250, 300, 15);
-    m_pMix->setBounds(10, 270, 300, 15);
+    m_pOutputVolumeSlider->setBounds(10, 150, 300, 15);
+    m_pToneSlider->setBounds(10, 170, 300, 15);
+    m_pOversample->setBounds(10, 190, 300, 15);
+    m_pInputCutoff->setBounds(10, 210, 300, 15);
+    m_pMix->setBounds(10, 230, 300, 15);
+    m_pLfoRate->setBounds(10, 250, 300, 15);
+    m_pLfoDepth->setBounds(10, 270, 300, 15);
+    m_pOscPhase->setBounds(10, 290, 300, 15);
 }

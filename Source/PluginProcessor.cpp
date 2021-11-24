@@ -37,6 +37,9 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
 	m_pOversample = new juce::AudioParameterInt("oversample", "Oversample", 0.f, 1.f, 0.0);
 	m_pInputFilterCutoff = new juce::AudioParameterFloat("input_filter", "Input Filter", 0.f, 1.f, 0.1f);
 	m_pMix = new juce::AudioParameterFloat("mix", "Mix", 0.f, 1.f, 1.f);
+	m_pLfoRate = new juce::AudioParameterFloat("lfo_rate", "LFO Rate", 0.f, 1.f, 1.f);
+	m_pLfoDepth = new juce::AudioParameterFloat("lfo_depth", "LFO Mix", 0.f, 1.f, 1.f);
+	m_pOscPhase = new juce::AudioParameterFloat("osc_phase", "OSC Phase", 0.f, 1.f, 1.f);
 
     addParameter(m_pFrequency);
     addParameter(m_pThreshold);
@@ -52,6 +55,9 @@ CrashSyncAudioProcessor::CrashSyncAudioProcessor()
 	addParameter(m_pOversample);
 	addParameter(m_pInputFilterCutoff);
 	addParameter(m_pMix);
+	addParameter(m_pLfoRate);
+	addParameter(m_pLfoDepth);
+	addParameter(m_pOscPhase);
 
 	m_pOversampler.reset(new juce::dsp::Oversampling<float>(getNumInputChannels(), 2, juce::dsp::Oversampling<float>::filterHalfBandFIREquiripple, false));
 }
@@ -131,6 +137,8 @@ void CrashSyncAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBl
     m_OscillatorL.reset(false);
 	m_OscillatorR.setSamplerate(sampleRate);
 	m_OscillatorR.reset(false);
+	m_Lfo.setSamplerate(sampleRate);
+	m_Lfo.reset(false);
 	m_FilterL.setSamplerate(sampleRate);
 	m_FilterL.reset();
 	m_FilterR.setSamplerate(sampleRate);
@@ -211,8 +219,19 @@ void CrashSyncAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, ju
 		numSamples = oversampleBuffer.getNumSamples();
 	}
 
+	const float freqRange = 9900;
+	const float freqMin = 100;
+	const float freqParamValue = (m_pFrequency->get() * m_pFrequency->get()) * freqRange + freqMin;
+
     for(int i = 0; i < numSamples; i++)
     {
+		float lfoValue = m_Lfo.process();
+		const float freqModValue = freqRange * lfoValue * 0.5f;
+		float freqValue = freqParamValue + freqModValue;
+		freqValue = SCMath::clip(freqValue, freqMin, freqRange + freqMin);
+		m_OscillatorL.setFrequency(freqValue);
+		m_OscillatorR.setFrequency(freqValue);
+
 		float dryL = *(inputL + i);
 		float dryR = *(inputR + i);
 
@@ -315,10 +334,12 @@ void CrashSyncAudioProcessor::processSubrate()
 	m_OscillatorL.setWaveform(m_pWaveform->get());
 	m_OscillatorL.setApplyPolyBlep(m_pPolyBlep->get());
 	m_OscillatorL.setPulseWidth(m_pPulseWidth->get());
+	m_OscillatorL.setPhaseOffset(0);
 	m_OscillatorR.setFrequency((m_pFrequency->get() * m_pFrequency->get()) * 9900 + 100);
 	m_OscillatorR.setWaveform(m_pWaveform->get());
 	m_OscillatorR.setApplyPolyBlep(m_pPolyBlep->get());
 	m_OscillatorR.setPulseWidth(m_pPulseWidth->get());
+	m_OscillatorR.setPhaseOffset(static_cast<int32_t>(m_pOscPhase->get() * 0x7FFFFFFF));
 	m_EnvelopeFollowerL.setAttackTimeMs(m_pEnvAttack->get());
 	m_EnvelopeFollowerL.setReleaseTimeMs(m_pEnvRelease->get());
 	m_EnvelopeFollowerR.setAttackTimeMs(m_pEnvAttack->get());

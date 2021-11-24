@@ -48,6 +48,9 @@ private:
     std::unique_ptr<SCUI::SCTestSlider> m_pOversample;
     std::unique_ptr<SCUI::SCTestSlider> m_pInputCutoff;
     std::unique_ptr<SCUI::SCTestSlider> m_pMix;
+    std::unique_ptr<SCUI::SCTestSlider> m_pLfoRate;
+    std::unique_ptr<SCUI::SCTestSlider> m_pLfoDepth;
+    std::unique_ptr<SCUI::SCTestSlider> m_pOscPhase;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CrashSyncAudioProcessorEditor)
 };

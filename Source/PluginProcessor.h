@@ -80,6 +80,9 @@ private:
     juce::AudioParameterFloat * m_pTone;    
     juce::AudioParameterFloat * m_pInputFilterCutoff;
     juce::AudioParameterFloat * m_pMix;
+    juce::AudioParameterFloat * m_pLfoRate;
+    juce::AudioParameterFloat * m_pLfoDepth;
+    juce::AudioParameterFloat * m_pOscPhase;
 
     juce::AudioParameterInt * m_pWaveform;
     juce::AudioParameterInt * m_pInputMode;
@@ -88,6 +91,7 @@ private:
 
     SCDsp::SCOscillator m_OscillatorL;
     SCDsp::SCOscillator m_OscillatorR;
+    SCDsp::SCOscillator m_Lfo;
     SCDsp::SCEnvelopeFollower m_EnvelopeFollowerL;
     SCDsp::SCEnvelopeFollower m_EnvelopeFollowerR;
     SCDsp::SCOnePoleFilter m_FilterL;

@@ -26,5 +26,8 @@ enum
     kCrashSyncParamOversample,
     kCrashSyncParamInputFilter,
     kCrashSyncParamMix,
+    kCrashSyncParamLfoRate,
+    kCrashSyncParamLfoDepth,
+    kCrashSyncParamOscPhase,
     kNumCrashSyncParams
 };
